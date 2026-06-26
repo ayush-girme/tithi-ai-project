@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login — Tithi.ai</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Phosphor Icons CDN -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js" defer></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            navy: '#0A2947',
+            ice: '#AACCD6',
+            orange: '#FF6A1C',
+            offwhite: '#FAF6F0',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    html { font-family: 'Inter', sans-serif; }
+
+    .nav-link {
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: #FF6A1C;
+      transition: width 0.22s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #FF6A1C 0%, #ff8c4c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .form-input {
+      transition: all 0.2s ease;
+    }
+    .form-input:focus {
+      transform: scale(1.01);
+      box-shadow: 0 0 0 3px rgba(255, 106, 28, 0.1);
+    }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .admin-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .admin-panel.show {
+      max-height: 1000px;
+    }
+
+    .success-message {
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-offwhite text-navy antialiased">
+
+<!-- ===================== NAVIGATION ===================== -->
+<nav class="sticky top-0 z-50 bg-offwhite/95 backdrop-blur border-b border-ice/40 shadow-sm">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+
+      <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
+        <div class="w-8 h-8 rounded-lg bg-orange flex items-center justify-center">
+          <i class="ph-bold ph-lightning text-white text-base"></i>
+        </div>
+        <span class="text-xl font-bold tracking-tight text-navy">tithi<span class="text-orange">.ai</span></span>
+      </a>
+
+      <div class="hidden md:flex items-center gap-7">
+        <a href="index.html" class="nav-link text-sm font-medium text-navy/70 hover:text-navy">Home</a>
+        <a href="lessons.html" class="nav-link text-sm font-medium text-navy/70 hover:text-navy">Lessons</a>
+        <a href="index.html#curriculum" class="nav-link text-sm font-medium text-navy/70 hover:text-navy">Curriculum</a>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="login.html" class="hidden md:inline text-sm font-medium text-orange font-semibold">Admin Login</a>
+        <a href="#" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-orange hover:bg-[#e55f17] text-white text-sm font-semibold transition-colors shadow-sm">
+          Enroll Now
+          <i class="ph-bold ph-arrow-right text-sm"></i>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+
+<!-- ===================== LOGIN SECTION ===================== -->
+<section class="relative min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+
+  <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div class="absolute -top-32 -right-40 w-[700px] h-[700px] rounded-full bg-ice opacity-20 blur-3xl"></div>
+    <div class="absolute bottom-0 -left-24 w-[400px] h-[400px] rounded-full bg-ice opacity-30 blur-2xl"></div>
+  </div>
+
+  <div class="relative w-full max-w-md">
+    <div class="reveal">
+      <!-- Login Form Container -->
+      <div id="loginForm" class="bg-white rounded-3xl shadow-2xl border border-ice/40 p-8 sm:p-10">
+        
+        <div class="text-center mb-8">
+          <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-orange to-orange/70 flex items-center justify-center mx-auto mb-4">
+            <i class="ph-bold ph-shield-check text-white text-2xl"></i>
+          </div>
+          <h1 class="text-3xl font-bold text-navy mb-2">Admin Portal</h1>
+          <p class="text-navy/60 text-sm">Authorized owners only</p>
+        </div>
+
+        <form id="adminLoginForm" class="space-y-6" onsubmit="handleLogin(event)">
+          
+          <div>
+            <label for="email" class="block text-sm font-semibold text-navy mb-2">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="admin@tithi.ai"
+              required
+              class="form-input w-full px-4 py-3 rounded-lg border border-ice/60 bg-offwhite/50 text-navy placeholder-navy/40 focus:outline-none focus:border-orange focus:ring-2 focus:ring-orange/20"
+            />
+          </div>
+
+          <div>
+            <label for="password" class="block text-sm font-semibold text-navy mb-2">Password</label>
+            <div class="relative">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                required
+                class="form-input w-full px-4 py-3 rounded-lg border border-ice/60 bg-offwhite/50 text-navy placeholder-navy/40 focus:outline-none focus:border-orange focus:ring-2 focus:ring-orange/20"
+              />
+              <button
+                type="button"
+                onclick="togglePassword()"
+                class="absolute right-3 top-3.5 text-navy/60 hover:text-navy transition"
+              >
+                <i id="passIcon" class="ph-bold ph-eye text-lg"></i>
+              </button>
+            </div>
+          </div>
+
+          <div id="errorMessage" class="hidden bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-sm text-red-700 flex items-center gap-2">
+            <i class="ph-bold ph-warning text-lg"></i>
+            <span id="errorText"></span>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-gradient-to-r from-orange to-orange/80 hover:from-[#e55f17] hover:to-[#d4521f] text-white font-semibold py-3 rounded-lg transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg flex items-center justify-center gap-2"
+          >
+            <i class="ph-bold ph-sign-in text-lg"></i>
+            Sign In
+          </button>
+
+        </form>
+
+        <div class="mt-6 pt-6 border-t border-ice/40">
+          <p class="text-center text-xs text-navy/60">
+            Demo credentials: <br />
+            <span class="font-mono bg-offwhite px-2 py-1 rounded text-navy/80">admin@tithi.ai</span><br />
+            <span class="font-mono bg-offwhite px-2 py-1 rounded text-navy/80">Admin@123</span>
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Admin Dashboard -->
+      <div id="adminDashboard" class="hidden">
+        
+        <div class="bg-white rounded-3xl shadow-2xl border border-ice/40 p-8 sm:p-10">
+          
+          <div class="success-message text-center mb-8">
+            <div class="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-4 border border-green-200">
+              <i class="ph-bold ph-check text-2xl text-green-600"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-navy mb-2">Welcome Back!</h2>
+            <p id="welcomeText" class="text-navy/60">Administrator access granted</p>
+          </div>
+
+          <div class="space-y-4">
+            <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-semibold text-navy">Total Students</h3>
+                <i class="ph-bold ph-users text-2xl text-indigo-500"></i>
+              </div>
+              <p class="text-2xl font-bold text-navy">2,548</p>
+              <p class="text-xs text-navy/60 mt-1">+124 this month</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-100">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-semibold text-navy">Active Courses</h3>
+                <i class="ph-bold ph-books text-2xl text-purple-500"></i>
+              </div>
+              <p class="text-2xl font-bold text-navy">9</p>
+              <p class="text-xs text-navy/60 mt-1">45 lessons total</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-100">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-semibold text-navy">Completion Rate</h3>
+                <i class="ph-bold ph-chart-line text-2xl text-cyan-500"></i>
+              </div>
+              <p class="text-2xl font-bold text-navy">78.5%</p>
+              <p class="text-xs text-navy/60 mt-1">Average across all courses</p>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-6 border-t border-ice/40">
+            <p class="text-sm text-navy/70 mb-4">
+              🔐 <strong>Protected Area:</strong> Only authorized administrators can access this dashboard. All activities are logged for security purposes.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onclick="handleLogout()"
+            class="w-full mt-6 bg-navy hover:bg-navy/90 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+          >
+            <i class="ph-bold ph-sign-out text-lg"></i>
+            Sign Out
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="bg-navy text-offwhite py-12">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="text-center">
+      <p class="text-sm text-offwhite/60">
+        © 2026 Tithi.ai. All rights reserved. Built with <i class="ph-bold ph-heart text-orange"></i> for aspiring AI professionals.
+      </p>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ===================== LOGIN SCRIPT ===================== -->
+<script>
+  // Authorized owners list
+  const authorizedUsers = {
+    'admin@tithi.ai': 'Admin@123',
+    'owner@tithi.ai': 'Owner@123',
+    'team@tithi.ai': 'Team@123'
+  };
+
+  // Store login state
+  let isLoggedIn = localStorage.getItem('tithiAdminLoggedIn') === 'true';
+  let currentUser = localStorage.getItem('tithiAdminUser');
+
+  // Check if already logged in
+  if (isLoggedIn && currentUser) {
+    showAdminDashboard(currentUser);
+  }
+
+  function togglePassword() {
+    const passInput = document.getElementById('password');
+    const passIcon = document.getElementById('passIcon');
+    
+    if (passInput.type === 'password') {
+      passInput.type = 'text';
+      passIcon.classList.remove('ph-eye');
+      passIcon.classList.add('ph-eye-slash');
+    } else {
+      passInput.type = 'password';
+      passIcon.classList.remove('ph-eye-slash');
+      passIcon.classList.add('ph-eye');
+    }
+  }
+
+  function handleLogin(event) {
+    event.preventDefault();
+    
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const errorDiv = document.getElementById('errorMessage');
+    const errorText = document.getElementById('errorText');
+
+    // Validate credentials
+    if (authorizedUsers[email] && authorizedUsers[email] === password) {
+      // Successful login
+      localStorage.setItem('tithiAdminLoggedIn', 'true');
+      localStorage.setItem('tithiAdminUser', email);
+      
+      errorDiv.classList.add('hidden');
+      showAdminDashboard(email);
+    } else {
+      // Failed login
+      errorText.textContent = 'Invalid email or password. Only authorized owners can access this area.';
+      errorDiv.classList.remove('hidden');
+      document.getElementById('password').value = '';
+    }
+  }
+
+  function showAdminDashboard(email) {
+    document.getElementById('loginForm').classList.add('hidden');
+    document.getElementById('adminDashboard').classList.remove('hidden');
+    document.getElementById('welcomeText').textContent = `Welcome, ${email}! You have full administrator access.`;
+  }
+
+  function handleLogout() {
+    if (confirm('Are you sure you want to sign out?')) {
+      localStorage.removeItem('tithiAdminLoggedIn');
+      localStorage.removeItem('tithiAdminUser');
+      
+      document.getElementById('adminDashboard').classList.add('hidden');
+      document.getElementById('loginForm').classList.remove('hidden');
+      document.getElementById('adminLoginForm').reset();
+      document.getElementById('password').type = 'password';
+      document.getElementById('passIcon').classList.remove('ph-eye-slash');
+      document.getElementById('passIcon').classList.add('ph-eye');
+    }
+  }
+
+  // Reveal animation
+  (function () {
+    const els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    els.forEach((el) => observer.observe(el));
+  })();
+
+  // Sticky nav shadow
+  (function () {
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 8) {
+        nav.classList.add('shadow-md');
+      } else {
+        nav.classList.remove('shadow-md');
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
