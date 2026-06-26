@@ -132,7 +132,7 @@
 </section>
 
 
-<!-- ===================== LESSONS GRID ===================== -->
+<!-- ===================== LESSONS GRID (Slide IDE view) ===================== -->
 <section class="bg-white py-20">
   <div class="max-w-7xl mx-auto px-6 lg:px-8">
 
@@ -360,6 +360,150 @@
 
   </div>
 </section>
+
+
+<!-- ===================== SLIDE OVERLAY (IDE-style) ===================== -->
+<div id="slideOverlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-navy/60 p-4">
+  <div class="w-full max-w-6xl bg-offwhite rounded-2xl shadow-2xl border border-ice/40 overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-3 border-b border-ice/40 bg-white">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-md bg-orange flex items-center justify-center text-white font-bold">IDE</div>
+        <h3 id="slideTitle" class="text-navy font-semibold"></h3>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="closeSlide()" class="text-navy/70 hover:text-navy px-3 py-2 rounded-md">Close</button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-0">
+      <!-- Left: Code pane -->
+      <div class="col-span-6 p-6 bg-offwhite border-r border-ice/40" style="min-height:420px">
+        <div class="flex items-center justify-between mb-4">
+          <div class="text-xs font-semibold text-navy/70">Code (Read-only)</div>
+          <div class="text-xs font-mono text-navy/60" id="codeLang">JS</div>
+        </div>
+        <pre id="codeBlock" class="whitespace-pre-wrap font-mono text-sm text-navy bg-white p-4 rounded-md border border-ice/40" style="max-height:520px; overflow:auto;">// Code preview will appear here</pre>
+      </div>
+
+      <!-- Right: Output pane -->
+      <div class="col-span-6 p-6 bg-white" style="min-height:420px">
+        <div class="flex items-center justify-between mb-4">
+          <div class="text-xs font-semibold text-navy/70">Output / Explanation</div>
+          <div class="text-xs font-mono text-navy/60" id="outputType">Preview</div>
+        </div>
+        <div id="outputBlock" class="text-sm text-navy/70 bg-offwhite p-4 rounded-md border border-ice/40" style="max-height:520px; overflow:auto;">
+          <!-- Rendered output goes here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mapping lesson titles to code snippets and outputs
+  const lessonSnippets = {
+    'What is AI?': {
+      lang: 'py',
+      code: `# Simple linear regression example\nimport numpy as np\nfrom sklearn.linear_model import LinearRegression\nX = np.array([[1],[2],[3],[4]])\ny = np.array([2,4,6,8])\nmodel = LinearRegression().fit(X, y)\nprint('Coef:', model.coef_[0])\nprint('Intercept:', model.intercept_)`,
+      output: `Coef: 2.0\nIntercept: 0.0\n\nExplanation: demonstrates a trivial ML model where y=2x.`
+    },
+    'LLMs Explained': {
+      lang: 'md',
+      code: `// Prompt example for an LLM\nconst prompt = `"""Summarize the following text in one paragraph:\n<source_text>"""`\n// Send to LLM via API` ,
+      output: `Example output:\n"This article explains the transformer architecture..."\n\nExplanation: shows a simple prompting pattern.`
+    },
+    'Responsible AI': {
+      lang: 'md',
+      code: `# Checklist for Responsible AI\n- Evaluate dataset bias\n- Add explainability\n- Monitor model drift\n- Implement access controls`,
+      output: `Explanation: Use this checklist during model development and deployment to reduce harm.`
+    },
+    'AI Use Cases': {
+      lang: 'md',
+      code: `# Real-world use cases\n- Customer support automation\n- Code generation assistants\n- Document summarization\n- Search augmentation`,
+      output: `Explanation: Choose use-cases that add clear business value and measure outcomes.`
+    },
+    'Quick Wins': {
+      lang: 'md',
+      code: `# Quick wins\n- Automate report generation\n- Email template generation\n- Knowledge base search`,
+      output: `Explanation: Start with small, measurable automations to build momentum.`
+    },
+    'Prompt Basics': {
+      lang: 'js',
+      code: `// Few-shot prompt example\nconst prompt = `"""Translate to French:\n1. Hello -> Bonjour\n2. Thank you -> Merci\n3. Good night ->"""`\n// Model should continue the pattern`,
+      output: `Model output: "Bonne nuit"\nExplanation: shows few-shot prompting.`
+    },
+    'Advanced Techniques': {
+      lang: 'md',
+      code: `# Advanced prompting\n- Chain-of-thought\n- Tool use\n- Retrieval-augmented generation`,
+      output: `Explanation: Combine techniques for robust, multi-step reasoning.`
+    },
+    'Role-Specific Prompts': {
+      lang: 'md',
+      code: `# Example: Developer prompt\n"Review this PR and list potential bugs and improvements."`,
+      output: `Explanation: Tailor prompts to user roles for higher relevance.`
+    },
+    'Testing & Iteration': {
+      lang: 'md',
+      code: `# Test cases for prompts\n- Edge cases\n- Ambiguous inputs\n- Performance metrics`,
+      output: `Explanation: Create a repeatable testing workflow to iterate on prompts.`
+    },
+    'Hands-on Lab': {
+      lang: 'bash',
+      code: `# Start a simple local server\npython -m http.server 8000\n# Open http://localhost:8000 in the browser`,
+      output: `Explanation: Hands-on lab to set up a minimal local environment for testing.`
+    },
+    'AI Coding Assistants': {
+      lang: 'js',
+      code: `// Using an AI assistant for code completion (pseudocode)\nassistant.suggest('function calculate(a, b) {')`,
+      output: `Explanation: AI can help write boilerplate and suggest implementations.`
+    },
+    'LLM API Integration': {
+      lang: 'js',
+      code: `// Pseudocode: call LLM API\nfetch('/api/llm', { method: 'POST', body: JSON.stringify({ prompt }) })`,
+      output: `Explanation: Integrate LLMs via standard HTTP APIs from your backend.`
+    },
+    'RAG Systems': {
+      lang: 'md',
+      code: `# RAG (Retrieval-Augmented Generation)\n- Index documents\n- Retrieve relevant chunks\n- Use LLM to synthesize answers`,
+      output: `Explanation: RAG improves factual accuracy by grounding LLM responses.`
+    }
+  };
+
+  // Attach click handlers to lesson items
+  function attachLessonHandlers() {
+    document.querySelectorAll('.lesson-item').forEach(el => {
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', () => {
+        const titleEl = el.querySelector('h3');
+        const title = titleEl ? titleEl.textContent.trim() : 'Lesson';
+        const snippet = lessonSnippets[title] || {lang: 'txt', code: '// No snippet available', output: 'No preview available.'};
+        openSlide(title, snippet.code, snippet.output, snippet.lang);
+      });
+    });
+  }
+
+  function openSlide(title, code, output, lang) {
+    document.getElementById('slideTitle').textContent = title;
+    document.getElementById('codeLang').textContent = (lang || 'txt').toUpperCase();
+    document.getElementById('codeBlock').textContent = code;
+    document.getElementById('outputBlock').textContent = output;
+    document.getElementById('slideOverlay').classList.remove('hidden');
+    document.getElementById('slideOverlay').classList.add('flex');
+    // Prevent background scroll
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSlide() {
+    document.getElementById('slideOverlay').classList.add('hidden');
+    document.getElementById('slideOverlay').classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  // Initialize handlers after DOM
+  document.addEventListener('DOMContentLoaded', () => {
+    attachLessonHandlers();
+  });
+</script>
 
 
 <!-- ===================== FOOTER ===================== -->
