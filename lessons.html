@@ -362,16 +362,18 @@
 </section>
 
 
-<!-- ===================== SLIDE OVERLAY (IDE-style) ===================== -->
-<div id="slideOverlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-navy/60 p-4">
+<!-- ===================== SLIDE OVERLAY (IDE-style, accessible + navigation) ===================== -->
+<div id="slideOverlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-navy/60 p-4" role="dialog" aria-modal="true" aria-labelledby="slideTitle">
   <div class="w-full max-w-6xl bg-offwhite rounded-2xl shadow-2xl border border-ice/40 overflow-hidden">
-    <div class="flex items-center justify-between px-6 py-3 border-b border-ice/40 bg-white">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-ice/40 bg-white">
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 rounded-md bg-orange flex items-center justify-center text-white font-bold">IDE</div>
         <h3 id="slideTitle" class="text-navy font-semibold"></h3>
       </div>
-      <div class="flex items-center gap-3">
-        <button onclick="closeSlide()" class="text-navy/70 hover:text-navy px-3 py-2 rounded-md">Close</button>
+      <div class="flex items-center gap-2">
+        <button id="prevSlideBtn" onclick="prevSlide()" aria-label="Previous slide" class="text-navy/70 hover:text-navy px-3 py-2 rounded-md">Prev</button>
+        <button id="nextSlideBtn" onclick="nextSlide()" aria-label="Next slide" class="text-navy/70 hover:text-navy px-3 py-2 rounded-md">Next</button>
+        <button id="closeSlideBtn" onclick="closeSlide()" class="text-navy/70 hover:text-navy px-3 py-2 rounded-md">Close</button>
       </div>
     </div>
 
@@ -469,34 +471,97 @@
     }
   };
 
-  // Attach click handlers to lesson items
+  // Build a stable list of lessons and attach handlers (keyboard accessible)
+  const lessonElements = [];
   function attachLessonHandlers() {
-    document.querySelectorAll('.lesson-item').forEach(el => {
-      el.style.cursor = 'pointer';
-      el.addEventListener('click', () => {
+    const els = Array.from(document.querySelectorAll('.lesson-item'));
+    els.forEach((el, idx) => {
+      el.setAttribute('tabindex', '0');
+      el.setAttribute('role', 'button');
+      el.dataset.lessonIndex = idx;
+      lessonElements.push(el);
+
+      const openHandler = () => {
         const titleEl = el.querySelector('h3');
         const title = titleEl ? titleEl.textContent.trim() : 'Lesson';
         const snippet = lessonSnippets[title] || {lang: 'txt', code: '// No snippet available', output: 'No preview available.'};
-        openSlide(title, snippet.code, snippet.output, snippet.lang);
+        openSlide(title, snippet.code, snippet.output, snippet.lang, idx);
+      };
+
+      el.addEventListener('click', openHandler);
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openHandler();
+        }
       });
     });
   }
 
-  function openSlide(title, code, output, lang) {
+  let currentIndex = -1;
+
+  function renderSlideByIndex(idx) {
+    if (idx < 0 || idx >= lessonElements.length) return;
+    const el = lessonElements[idx];
+    const titleEl = el.querySelector('h3');
+    const title = titleEl ? titleEl.textContent.trim() : 'Lesson';
+    const snippet = lessonSnippets[title] || {lang: 'txt', code: '// No snippet available', output: 'No preview available.'};
+    document.getElementById('slideTitle').textContent = title;
+    document.getElementById('codeLang').textContent = (snippet.lang || 'txt').toUpperCase();
+    document.getElementById('codeBlock').textContent = snippet.code;
+    document.getElementById('outputBlock').textContent = snippet.output;
+    currentIndex = idx;
+    updateNavButtons();
+  }
+
+  function openSlide(title, code, output, lang, idx) {
     document.getElementById('slideTitle').textContent = title;
     document.getElementById('codeLang').textContent = (lang || 'txt').toUpperCase();
     document.getElementById('codeBlock').textContent = code;
     document.getElementById('outputBlock').textContent = output;
     document.getElementById('slideOverlay').classList.remove('hidden');
     document.getElementById('slideOverlay').classList.add('flex');
+    document.getElementById('slideOverlay').focus();
+    currentIndex = typeof idx === 'number' ? idx : currentIndex;
+    updateNavButtons();
     // Prevent background scroll
     document.body.style.overflow = 'hidden';
+    // Attach key handlers
+    document.addEventListener('keydown', handleOverlayKeys);
   }
 
   function closeSlide() {
     document.getElementById('slideOverlay').classList.add('hidden');
     document.getElementById('slideOverlay').classList.remove('flex');
     document.body.style.overflow = '';
+    document.removeEventListener('keydown', handleOverlayKeys);
+  }
+
+  function prevSlide() {
+    if (currentIndex > 0) {
+      renderSlideByIndex(currentIndex - 1);
+    }
+  }
+
+  function nextSlide() {
+    if (currentIndex < lessonElements.length - 1) {
+      renderSlideByIndex(currentIndex + 1);
+    }
+  }
+
+  function updateNavButtons() {
+    const prevBtn = document.getElementById('prevSlideBtn');
+    const nextBtn = document.getElementById('nextSlideBtn');
+    prevBtn.disabled = currentIndex <= 0;
+    nextBtn.disabled = currentIndex >= lessonElements.length - 1;
+    prevBtn.classList.toggle('opacity-40', prevBtn.disabled);
+    nextBtn.classList.toggle('opacity-40', nextBtn.disabled);
+  }
+
+  function handleOverlayKeys(e) {
+    if (e.key === 'Escape') closeSlide();
+    else if (e.key === 'ArrowLeft') prevSlide();
+    else if (e.key === 'ArrowRight') nextSlide();
   }
 
   // Initialize handlers after DOM
