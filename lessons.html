@@ -1,660 +1,398 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<!doctype html>
+<html lang="en" class="h-full">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lessons — Tithi.ai AI Masterclass</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lessons — Tithi.ai</title>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Phosphor Icons CDN -->
+  <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js" defer></script>
 
+  <!-- Swiper CSS & JS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js" defer></script>
+
   <script>
+    // Tailwind custom config
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace']
           },
           colors: {
             navy: '#0A2947',
             ice: '#AACCD6',
             orange: '#FF6A1C',
-            offwhite: '#FAF6F0',
-          },
-        },
-      },
+            offwhite: '#FAF6F0'
+          }
+        }
+      }
     };
   </script>
 
   <style>
-    html { font-family: 'Inter', sans-serif; }
+    /* Page-level rules */
+    html, body { height: 100%; }
+    body { background: #FAF6F0; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; overflow: hidden; }
 
-    .nav-link {
-      position: relative;
-    }
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 2px;
+    /* Swiper nav & bullets custom styling */
+    .swiper-button-next,
+    .swiper-button-prev {
+      width: 44px;
+      height: 44px;
+      border-radius: 4px;
       background-color: #FF6A1C;
-      transition: width 0.22s ease;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(10,41,71,0.12);
     }
-    .nav-link:hover::after { width: 100%; }
-
-    .gradient-text {
-      background: linear-gradient(135deg, #FF6A1C 0%, #ff8c4c 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .swiper-button-next::after, .swiper-button-prev::after { content: none; } /* hide default arrow */
+    .swiper-pagination-bullet {
+      width: 10px;
+      height: 10px;
+      background: #E5E7EB;
+      opacity: 1;
+      border-radius: 9999px;
+      margin: 0 6px !important;
     }
-
-    .course-card {
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-    }
-    .course-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 20px 50px rgba(10, 41, 71, 0.12);
-    }
-
-    .lesson-item {
-      transition: transform 0.2s ease, background-color 0.2s ease;
-    }
-    .lesson-item:hover {
-      transform: translateX(4px);
+    .swiper-pagination-bullet-active {
+      background: #FF6A1C;
+      transform: scale(1.15);
     }
 
-    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.55s ease, transform 0.55s ease; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
+    /* Mock IDE code styling */
+    .ide-window {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(10,41,71,0.12);
+    }
+    .ide-topbar {
+      height: 42px;
+      background: linear-gradient(180deg,#0f1724,#081226);
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 0 12px;
+      color: #cbd5e1;
+      font-size: 13px;
+    }
+    .ide-tabs { display:flex; gap:8px; align-items:center; }
+    .ide-tab { padding:6px 10px; border-radius:6px; background:rgba(255,255,255,0.02); color:#e6eef8; font-family: 'JetBrains Mono', monospace; font-size:13px; }
+    .ide-editor {
+      background: #0b1220;
+      color: #d8eefe;
+      padding: 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height:1.6;
+      overflow:auto;
+      max-height:420px;
+    }
+
+    /* Left sidebar scroll area */
+    .sidebar-scroll { max-height: calc(100vh - 96px); overflow:auto; padding-right: 8px; }
+    .module-title { font-weight: 700; color: #0A2947; }
+    .lesson-link { display:block; padding:10px 12px; border-radius:8px; color:#0A2947; }
+    .lesson-link[aria-current="true"] { background: #FF6A1C; color: #fff; font-weight:600; }
   </style>
 </head>
+<body class="h-screen flex flex-col">
 
-<body class="bg-offwhite text-navy antialiased">
-
-<!-- ===================== NAVIGATION ===================== -->
-<nav class="sticky top-0 z-50 bg-offwhite/95 backdrop-blur border-b border-ice/40 shadow-sm">
-  <div class="max-w-7xl mx-auto px-6 lg:px-8">
-    <div class="flex items-center justify-between h-16">
-
-      <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
-        <div class="w-8 h-8 rounded-lg bg-orange flex items-center justify-center">
-          <i class="ph-bold ph-lightning text-white text-base"></i>
-        </div>
-        <span class="text-xl font-bold tracking-tight text-navy">tithi<span class="text-orange">.ai</span></span>
-      </a>
-
-      <div class="hidden md:flex items-center gap-7">
-        <a href="index.html" class="nav-link text-sm font-medium text-navy/70 hover:text-navy">Home</a>
-        <a href="lessons.html" class="nav-link text-sm font-medium text-navy hover:text-navy font-semibold">Lessons</a>
-        <a href="index.html#curriculum" class="nav-link text-sm font-medium text-navy/70 hover:text-navy">Curriculum</a>
+  <!-- Top Navbar (fixed) -->
+  <header class="fixed top-0 left-0 right-0 bg-offwhite/95 backdrop-blur border-b border-ice/30 z-40">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-orange flex items-center justify-center text-white font-bold">t</div>
+          <span class="text-lg font-bold text-navy">tithi<span class="text-orange">.ai</span></span>
+        </a>
+        <div class="h-6 w-px bg-ice/60"></div>
+        <nav class="hidden sm:flex items-center gap-6 text-sm text-navy/70">
+          <a href="index.html" class="hover:text-navy">Home</a>
+          <a href="lessons.html" class="font-semibold text-navy">Lessons</a>
+          <a href="index.html#curriculum" class="hover:text-navy">Curriculum</a>
+        </nav>
       </div>
 
       <div class="flex items-center gap-3">
-        <a href="login.html" class="hidden md:inline text-sm font-medium text-navy/70 hover:text-navy">Admin Login</a>
-        <a href="#" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-orange hover:bg-[#e55f17] text-white text-sm font-semibold transition-colors shadow-sm">
-          Enroll Now
-          <i class="ph-bold ph-arrow-right text-sm"></i>
-        </a>
-      </div>
-
-    </div>
-  </div>
-</nav>
-
-
-<!-- ===================== PAGE HEADER ===================== -->
-<section class="relative overflow-hidden bg-offwhite pt-16 pb-12">
-
-  <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-    <div class="absolute -top-32 -right-40 w-[700px] h-[700px] rounded-full bg-ice opacity-20 blur-3xl"></div>
-  </div>
-
-  <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
-    <div class="reveal">
-      <h1 class="text-4xl sm:text-5xl lg:text-[3.4rem] font-extrabold leading-tight text-navy mb-4">
-        All Your <span class="gradient-text">Lessons</span>
-      </h1>
-      <p class="text-lg text-navy/70 leading-relaxed max-w-2xl">
-        Master AI through 45 comprehensive lessons organized across 9 professional courses. Each lesson is designed with hands-on labs and real-world projects.
-      </p>
-    </div>
-  </div>
-</section>
-
-
-<!-- ===================== LESSONS GRID (Slide IDE view) ===================== -->
-<section class="bg-white py-20">
-  <div class="max-w-7xl mx-auto px-6 lg:px-8">
-
-    <!-- Course 01 -->
-    <div class="mb-16 reveal">
-      <div class="flex items-center gap-4 mb-8">
-        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-          <span class="text-2xl font-bold text-white">01</span>
+        <div class="hidden sm:flex items-center gap-3 text-sm text-navy/80 bg-white px-3 py-1.5 rounded-md border border-ice/40">
+          <div class="w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-semibold">DK</div>
+          <div class="text-sm leading-4">
+            <div class="font-semibold text-navy">David Kim</div>
+            <div class="text-xs text-navy/60">Instructor</div>
+          </div>
         </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main layout -->
+  <div class="flex-1 pt-16 flex overflow-hidden">
+
+    <!-- Left Sidebar (Index) - hidden on small screens -->
+    <aside class="hidden lg:block w-72 bg-white border-r border-ice/30 p-6">
+      <div class="space-y-6">
+        <!-- Current progress -->
         <div>
-          <h2 class="text-3xl font-bold text-navy mb-1">AI Foundations</h2>
-          <p class="text-navy/60">Shared AI vocabulary; identify quick wins; responsible AI awareness</p>
+          <div class="flex items-center justify-between mb-2">
+            <div class="text-xs font-semibold text-navy/70">Current Progress</div>
+            <div class="text-xs text-navy/60">35%</div>
+          </div>
+          <div class="w-full bg-ice/40 rounded-full h-3">
+            <div class="h-3 rounded-full bg-orange" style="width:35%"></div>
+          </div>
+        </div>
+
+        <!-- Modules & Lessons (scrollable) -->
+        <div class="sidebar-scroll">
+          <div class="mb-6">
+            <div class="module-title mb-3">Module 01 — AI Foundations</div>
+            <div class="space-y-2">
+              <a href="#" class="lesson-link" aria-current="true">What is AI?</a>
+              <a href="#" class="lesson-link">LLMs Explained</a>
+              <a href="#" class="lesson-link">Responsible AI</a>
+              <a href="#" class="lesson-link">AI Use Cases</a>
+              <a href="#" class="lesson-link">Quick Wins</a>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <div class="module-title mb-3">Module 02 — Prompt Engineering</div>
+            <div class="space-y-2">
+              <a href="#" class="lesson-link">Prompt Basics</a>
+              <a href="#" class="lesson-link">Advanced Techniques</a>
+              <a href="#" class="lesson-link">Role-Specific Prompts</a>
+              <a href="#" class="lesson-link">Testing & Iteration</a>
+              <a href="#" class="lesson-link">Hands-on Lab</a>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <div class="module-title mb-3">Module 03 — Developer Tools</div>
+            <div class="space-y-2">
+              <a href="#" class="lesson-link">AI Coding Assistants</a>
+              <a href="#" class="lesson-link">LLM API Integration</a>
+              <a href="#" class="lesson-link">RAG Systems</a>
+            </div>
+          </div>
         </div>
       </div>
+    </aside>
 
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="lesson-item bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100 hover:border-indigo-200 cursor-pointer">
-          <div class="flex items-start gap-3 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center flex-shrink-0">
-              <i class="ph-bold ph-play text-white text-sm"></i>
-            </div>
+    <!-- Main Stage (Right side) -->
+    <main class="flex-1 p-6 overflow-auto">
+      <div class="max-w-6xl mx-auto">
+
+        <!-- Lesson header -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between">
             <div>
-              <h3 class="font-semibold text-navy mb-1">What is AI?</h3>
-              <p class="text-xs text-navy/60">2 hrs 15 min</p>
+              <div class="text-xs uppercase font-semibold text-navy/60">Module 01 • Lesson 01</div>
+              <h1 class="text-3xl font-extrabold text-navy leading-tight">What is AI?</h1>
+              <p class="text-sm text-navy/70 mt-2">Introduction to core AI concepts and a small code demonstration.</p>
+            </div>
+            <div class="hidden md:flex items-center gap-3">
+              <button class="px-4 py-2 rounded-lg bg-navy text-white text-sm">Mark Complete</button>
+              <button class="px-3 py-2 rounded-lg border border-ice/40 text-navy text-sm">Resources</button>
             </div>
           </div>
-          <p class="text-sm text-navy/70">Introduction to AI concepts, machine learning, and deep learning fundamentals.</p>
         </div>
 
-        <div class="lesson-item bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100 hover:border-indigo-200 cursor-pointer">
-          <div class="flex items-start gap-3 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center flex-shrink-0">
-              <i class="ph-bold ph-play text-white text-sm"></i>
-            </div>
-            <div>
-              <h3 class="font-semibold text-navy mb-1">LLMs Explained</h3>
-              <p class="text-xs text-navy/60">2 hrs 30 min</p>
+        <!-- Swiper container (card-like) -->
+        <div class="ide-window bg-white ide-window overflow-visible rounded-xl p-6">
+          <div class="max-w-full">
+            <!-- Swiper -->
+            <div class="swiper mySwiper">
+              <div class="swiper-wrapper">
+
+                <!-- Slide 1: Concept -->
+                <div class="swiper-slide p-6">
+                  <div class="bg-offwhite rounded-lg p-6 border border-ice/50">
+                    <h2 class="text-xl font-semibold text-navy mb-3">Concept</h2>
+                    <p class="text-sm text-navy/70 mb-4">
+                      Artificial Intelligence (AI) refers to systems that perform tasks which normally require human intelligence.
+                      In modern practice this often means statistical models trained on data (e.g., neural networks) that can make predictions or generate content.
+                    </p>
+
+                    <blockquote class="border-l-4 border-orange pl-4 italic text-navy/80 bg-white/60 p-4 rounded-md">
+                      "AI is not magic — it's applied statistics, engineering, and careful product design."
+                    </blockquote>
+
+                    <ul class="mt-4 text-sm text-navy/70 space-y-2">
+                      <li>• Models learn patterns from data</li>
+                      <li>• Quality of data strongly influences results</li>
+                      <li>• Responsible deployment requires monitoring and guardrails</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Slide 2: Parameters -->
+                <div class="swiper-slide p-6">
+                  <div class="bg-white rounded-lg p-6 border border-ice/50">
+                    <h2 class="text-xl font-semibold text-navy mb-4">Key API Parameters</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div class="p-4 rounded-lg border border-ice/40 bg-offwhite">
+                        <div class="flex items-center justify-between mb-2">
+                          <div class="text-sm font-semibold text-navy">Temperature</div>
+                          <div class="text-xs font-mono text-navy/60">0.0 - 1.0</div>
+                        </div>
+                        <p class="text-sm text-navy/70">
+                          Controls randomness. Lower values make outputs more deterministic; higher values increase creativity and unpredictability.
+                        </p>
+                        <div class="mt-3">
+                          <div class="w-full bg-ice/30 h-2 rounded-full">
+                            <div class="h-2 bg-orange rounded-full" style="width:45%"></div>
+                          </div>
+                          <div class="text-xs mt-2 text-navy/60">Example: 0.2 — precise; 0.8 — creative</div>
+                        </div>
+                      </div>
+
+                      <div class="p-4 rounded-lg border border-ice/40 bg-offwhite">
+                        <div class="flex items-center justify-between mb-2">
+                          <div class="text-sm font-semibold text-navy">Top_P (nucleus sampling)</div>
+                          <div class="text-xs font-mono text-navy/60">0.0 - 1.0</div>
+                        </div>
+                        <p class="text-sm text-navy/70">
+                          Limits tokens to a probability mass. Use instead of/in combination with Temperature for more controlled randomness.
+                        </p>
+                        <div class="mt-3">
+                          <div class="w-full bg-ice/30 h-2 rounded-full">
+                            <div class="h-2 bg-navy rounded-full" style="width:25%"></div>
+                          </div>
+                          <div class="text-xs mt-2 text-navy/60">Example: 0.9 — broad sampling; 0.1 — narrow sampling</div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Slide 3: Code Example (dark-themed mock IDE) -->
+                <div class="swiper-slide p-6">
+                  <div class="rounded-lg overflow-hidden border border-ice/40 ide-window">
+                    <div class="ide-topbar">
+                      <div class="ide-tabs">
+                        <div class="ide-tab">index.js</div>
+                        <div class="ide-tab">app.js</div>
+                      </div>
+                      <div class="ml-auto text-xs text-navy/40">JS • 12 lines</div>
+                    </div>
+
+                    <div class="ide-editor">
+<pre style="margin:0;">
+// Simple example: call LLM API (pseudocode)
+async function summarize(text) {
+  const resp = await fetch('/api/llm', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      prompt: `Summarize the text in one paragraph:\n\n${text}`,
+      temperature: 0.2,
+      top_p: 0.9
+    })
+  });
+  const data = await resp.json();
+  return data.output;
+}
+
+// usage
+summarize("Long article...").then(console.log);
+</pre>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Swiper navigation & pagination -->
+              <div class="flex items-center justify-between mt-6">
+                <div class="flex items-center gap-4">
+                  <div class="swiper-pagination"></div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="swiper-button-prev" aria-label="Previous slide">
+                    <!-- custom arrow -->
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <div class="swiper-button-next" aria-label="Next slide">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path d="M9 6l6 6-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
-          <p class="text-sm text-navy/70">Understanding Large Language Models, transformers, and how they work.</p>
         </div>
 
-        <div class="lesson-item bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100 hover:border-indigo-200 cursor-pointer">
-          <div class="flex items-start gap-3 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center flex-shrink-0">
-              <i class="ph-bold ph-play text-white text-sm"></i>
-            </div>
-            <div>
-              <h3 class="font-semibold text-navy mb-1">Responsible AI</h3>
-              <p class="text-xs text-navy/60">1 hr 45 min</p>
-            </div>
-          </div>
-          <p class="text-sm text-navy/70">Ethics, bias detection, and responsible deployment of AI systems.</p>
-        </div>
-
-        <div class="lesson-item bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100 hover:border-indigo-200 cursor-pointer">
-          <div class="flex items-start gap-3 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center flex-shrink-0">
-              <i class="ph-bold ph-play text-white text-sm"></i>
-            </div>
-            <div>
-              <h3 class="font-semibold text-navy mb-1">AI Use Cases</h3>
-              <p class="text-xs text-navy/60">3 hrs</p>
-            </div>
-          </div>
-          <p class="text-sm text-navy/70">Real-world applications and use cases across different industries.</p>
-        </div>
-
-        <div class="lesson-item bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100 hover:border-indigo-200 cursor-pointer">
-          <div class="flex items-start gap-3 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center flex-shrink-0">
-              <i class="ph-bold ph-play text-white text-sm"></i>
-            </div>
-            <div>
-              <h3 class="font-semibold text-navy mb-1">Quick Wins</h3>
-              <p class="text-xs text-navy/60">2 hrs 30 min</p>
-            </div>
-          </div>
-          <p class="text-sm text-navy/70">Identifying immediate opportunities to leverage AI in your workflow.</p>
-        </div>
       </div>
-    </div>
-
-    <!-- Course 02 -->
-    <div class="mb-16 reveal" style="transition-delay: 0.1s;">
-      <div class="flex items-center gap-4 mb-8">
-        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
-          <span class="text-2xl font-bold text-white">02</span>
-        </div>
-        <div>
-          <h2 class="text-3xl font-bold text-navy mb-1">Prompt Engineering</h2>
-          <p class="text-navy/60">Write effective prompts; save 1–2 hours/day; build role-specific AI habits</p>
-        </div>
-      </div>
-
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="lesson-item bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-100 hover:border-purple-200 cursor-pointer">
-          <div class="flex items-start gap-3 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-purple-500 flex items-center justify-center flex-shrink-0">
-              <i class="ph-bold ph-play text-white text-sm"></i>
-            </div>
-            <div>
-              <h3 class="font-semibold text-navy mb-1">Prompt Basics</h3>
-              <p class="text-xs text-navy/60">2 hrs</p>
-            </div>
-          </div>
-          <p class="text-sm text-navy/70">Foundation principles for writing effective prompts with LLMs.</p>
-        </div>
-
-        <div class="lesson-item bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-100 hover:border-purple-200 cursor-pointer">
-          <div class="flex items-start gap-3 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-purple-500 flex items-center justify-center flex-shrink-0">
-              <i class="ph-bold ph-play text-white text-sm"></i>
-            </div>
-            <div>
-              <h3 class="font-semibold text-navy mb-1">Advanced Techniques</h3>
-              <p class="text-xs text-navy/60">3 hrs</p>
-            </div>
-          </div>
-          <p class="text-sm text-navy/70">Chain-of-thought, few-shot learning, and multi-step reasoning.</p>
-        </div>
-
-        <div class="lesson-item bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-100 hover:border-purple-200 cursor-pointer">
-          <div class="flex items-start gap-3 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-purple-500 flex items-center justify-center flex-shrink-0">
-              <i class="ph-bold ph-play text-white text-sm"></i>
-            </div>
-            <div>
-              <h3 class="font-semibold text-navy mb-1">Role-Specific Prompts</h3>
-              <p class="text-xs text-navy/60">3 hrs 30 min</p>
-            </div>
-          </div>
-          <p class="text-sm text-navy/70">Tailored prompting strategies for developers, PMs, and business users.</p>
-        </div>
-
-        <div class="lesson-item bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-100 hover:border-purple-200 cursor-pointer">
-          <div class="flex items-start gap-3 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-purple-500 flex items-center justify-center flex-shrink-0">
-              <i class="ph-bold ph-play text-white text-sm"></i>
-            </div>
-            <div>
-              <h3 class="font-semibold text-navy mb-1">Testing & Iteration</h3>
-              <p class="text-xs text-navy/60">2 hrs</p>
-            </div>
-          </div>
-          <p class="text-sm text-navy/70">Systematic approaches to evaluate and improve prompt performance.</p>
-        </div>
-
-        <div class="lesson-item bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-100 hover:border-purple-200 cursor-pointer">
-          <div class="flex items-start gap-3 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-purple-500 flex items-center justify-center flex-shrink-0">
-              <i class="ph-bold ph-play text-white text-sm"></i>
-            </div>
-            <div>
-              <h3 class="font-semibold text-navy mb-1">Hands-on Lab</h3>
-              <p class="text-xs text-navy/60">4 hrs 30 min</p>
-            </div>
-          </div>
-          <p class="text-sm text-navy/70">Build and optimize a real-world prompt engineering system.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Course 03 -->
-    <div class="reveal" style="transition-delay: 0.2s;">
-      <div class="flex items-center gap-4 mb-8">
-        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
-          <span class="text-2xl font-bold text-white">03</span>
-        </div>
-        <div>
-          <h2 class="text-3xl font-bold text-navy mb-1">AI for Developers</h2>
-          <p class="text-navy/60">Code faster with AI; integrate LLM APIs; AI-assisted debugging becomes second nature</p>
-        </div>
-      </div>
-
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="lesson-item bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-100 hover:border-cyan-200 cursor-pointer">
-          <div class="flex items-start gap-3 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-cyan-500 flex items-center justify-center flex-shrink-0">
-              <i class="ph-bold ph-play text-white text-sm"></i>
-            </div>
-            <div>
-              <h3 class="font-semibold text-navy mb-1">AI Coding Assistants</h3>
-              <p class="text-xs text-navy/60">2 hrs 30 min</p>
-            </div>
-          </div>
-          <p class="text-sm text-navy/70">Using GitHub Copilot, ChatGPT, and other AI tools for faster development.</p>
-        </div>
-
-        <div class="lesson-item bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-100 hover:border-cyan-200 cursor-pointer">
-          <div class="flex items-start gap-3 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-cyan-500 flex items-center justify-center flex-shrink-0">
-              <i class="ph-bold ph-play text-white text-sm"></i>
-            </div>
-            <div>
-              <h3 class="font-semibold text-navy mb-1">LLM API Integration</h3>
-              <p class="text-xs text-navy/60">3 hrs 30 min</p>
-            </div>
-          </div>
-          <p class="text-sm text-navy/70">Integrating OpenAI, Anthropic, and other LLM APIs into applications.</p>
-        </div>
-
-        <div class="lesson-item bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-100 hover:border-cyan-200 cursor-pointer">
-          <div class="flex items-start gap-3 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-cyan-500 flex items-center justify-center flex-shrink-0">
-              <i class="ph-bold ph-play text-white text-sm"></i>
-            </div>
-            <div>
-              <h3 class="font-semibold text-navy mb-1">RAG Systems</h3>
-              <p class="text-xs text-navy/60">3 hrs</p>
-            </div>
-          </div>
-          <p class="text-sm text-navy/70">Building Retrieval-Augmented Generation systems for enterprise apps.</p>
-        </div>
-      </div>
-
-      <div class="text-center mt-12">
-        <p class="text-navy/70 mb-6">6 more courses available in the full program covering advanced topics.</p>
-        <a href="#" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-orange hover:bg-[#e55f17] text-white font-semibold text-sm transition-colors shadow-md">
-          Enroll Now to Access All Lessons
-          <i class="ph-bold ph-arrow-right"></i>
-        </a>
-      </div>
-    </div>
-
+    </main>
   </div>
-</section>
 
-
-<!-- ===================== SLIDE OVERLAY (IDE-style, accessible + navigation) ===================== -->
-<div id="slideOverlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-navy/60 p-4" role="dialog" aria-modal="true" aria-labelledby="slideTitle">
-  <div class="w-full max-w-6xl bg-offwhite rounded-2xl shadow-2xl border border-ice/40 overflow-hidden">
-    <div class="flex items-center justify-between px-4 py-3 border-b border-ice/40 bg-white">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-md bg-orange flex items-center justify-center text-white font-bold">IDE</div>
-        <h3 id="slideTitle" class="text-navy font-semibold"></h3>
-      </div>
-      <div class="flex items-center gap-2">
-        <button id="prevSlideBtn" onclick="prevSlide()" aria-label="Previous slide" class="text-navy/70 hover:text-navy px-3 py-2 rounded-md">Prev</button>
-        <button id="nextSlideBtn" onclick="nextSlide()" aria-label="Next slide" class="text-navy/70 hover:text-navy px-3 py-2 rounded-md">Next</button>
-        <button id="closeSlideBtn" onclick="closeSlide()" class="text-navy/70 hover:text-navy px-3 py-2 rounded-md">Close</button>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-12 gap-0">
-      <!-- Left: Code pane -->
-      <div class="col-span-6 p-6 bg-offwhite border-r border-ice/40" style="min-height:420px">
-        <div class="flex items-center justify-between mb-4">
-          <div class="text-xs font-semibold text-navy/70">Code (Read-only)</div>
-          <div class="text-xs font-mono text-navy/60" id="codeLang">JS</div>
-        </div>
-        <pre id="codeBlock" class="whitespace-pre-wrap font-mono text-sm text-navy bg-white p-4 rounded-md border border-ice/40" style="max-height:520px; overflow:auto;">// Code preview will appear here</pre>
-      </div>
-
-      <!-- Right: Output pane -->
-      <div class="col-span-6 p-6 bg-white" style="min-height:420px">
-        <div class="flex items-center justify-between mb-4">
-          <div class="text-xs font-semibold text-navy/70">Output / Explanation</div>
-          <div class="text-xs font-mono text-navy/60" id="outputType">Preview</div>
-        </div>
-        <div id="outputBlock" class="text-sm text-navy/70 bg-offwhite p-4 rounded-md border border-ice/40" style="max-height:520px; overflow:auto;">
-          <!-- Rendered output goes here -->
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-  // Mapping lesson titles to code snippets and outputs
-  const lessonSnippets = {
-    'What is AI?': {
-      lang: 'py',
-      code: `# Simple linear regression example\nimport numpy as np\nfrom sklearn.linear_model import LinearRegression\nX = np.array([[1],[2],[3],[4]])\ny = np.array([2,4,6,8])\nmodel = LinearRegression().fit(X, y)\nprint('Coef:', model.coef_[0])\nprint('Intercept:', model.intercept_)`,
-      output: `Coef: 2.0\nIntercept: 0.0\n\nExplanation: demonstrates a trivial ML model where y=2x.`
-    },
-    'LLMs Explained': {
-      lang: 'md',
-      code: `// Prompt example for an LLM\nconst prompt = `"""Summarize the following text in one paragraph:\n<source_text>"""`\n// Send to LLM via API` ,
-      output: `Example output:\n"This article explains the transformer architecture..."\n\nExplanation: shows a simple prompting pattern.`
-    },
-    'Responsible AI': {
-      lang: 'md',
-      code: `# Checklist for Responsible AI\n- Evaluate dataset bias\n- Add explainability\n- Monitor model drift\n- Implement access controls`,
-      output: `Explanation: Use this checklist during model development and deployment to reduce harm.`
-    },
-    'AI Use Cases': {
-      lang: 'md',
-      code: `# Real-world use cases\n- Customer support automation\n- Code generation assistants\n- Document summarization\n- Search augmentation`,
-      output: `Explanation: Choose use-cases that add clear business value and measure outcomes.`
-    },
-    'Quick Wins': {
-      lang: 'md',
-      code: `# Quick wins\n- Automate report generation\n- Email template generation\n- Knowledge base search`,
-      output: `Explanation: Start with small, measurable automations to build momentum.`
-    },
-    'Prompt Basics': {
-      lang: 'js',
-      code: `// Few-shot prompt example\nconst prompt = `"""Translate to French:\n1. Hello -> Bonjour\n2. Thank you -> Merci\n3. Good night ->"""`\n// Model should continue the pattern`,
-      output: `Model output: "Bonne nuit"\nExplanation: shows few-shot prompting.`
-    },
-    'Advanced Techniques': {
-      lang: 'md',
-      code: `# Advanced prompting\n- Chain-of-thought\n- Tool use\n- Retrieval-augmented generation`,
-      output: `Explanation: Combine techniques for robust, multi-step reasoning.`
-    },
-    'Role-Specific Prompts': {
-      lang: 'md',
-      code: `# Example: Developer prompt\n"Review this PR and list potential bugs and improvements."`,
-      output: `Explanation: Tailor prompts to user roles for higher relevance.`
-    },
-    'Testing & Iteration': {
-      lang: 'md',
-      code: `# Test cases for prompts\n- Edge cases\n- Ambiguous inputs\n- Performance metrics`,
-      output: `Explanation: Create a repeatable testing workflow to iterate on prompts.`
-    },
-    'Hands-on Lab': {
-      lang: 'bash',
-      code: `# Start a simple local server\npython -m http.server 8000\n# Open http://localhost:8000 in the browser`,
-      output: `Explanation: Hands-on lab to set up a minimal local environment for testing.`
-    },
-    'AI Coding Assistants': {
-      lang: 'js',
-      code: `// Using an AI assistant for code completion (pseudocode)\nassistant.suggest('function calculate(a, b) {')`,
-      output: `Explanation: AI can help write boilerplate and suggest implementations.`
-    },
-    'LLM API Integration': {
-      lang: 'js',
-      code: `// Pseudocode: call LLM API\nfetch('/api/llm', { method: 'POST', body: JSON.stringify({ prompt }) })`,
-      output: `Explanation: Integrate LLMs via standard HTTP APIs from your backend.`
-    },
-    'RAG Systems': {
-      lang: 'md',
-      code: `# RAG (Retrieval-Augmented Generation)\n- Index documents\n- Retrieve relevant chunks\n- Use LLM to synthesize answers`,
-      output: `Explanation: RAG improves factual accuracy by grounding LLM responses.`
-    }
-  };
-
-  // Build a stable list of lessons and attach handlers (keyboard accessible)
-  const lessonElements = [];
-  function attachLessonHandlers() {
-    const els = Array.from(document.querySelectorAll('.lesson-item'));
-    els.forEach((el, idx) => {
-      el.setAttribute('tabindex', '0');
-      el.setAttribute('role', 'button');
-      el.dataset.lessonIndex = idx;
-      lessonElements.push(el);
-
-      const openHandler = () => {
-        const titleEl = el.querySelector('h3');
-        const title = titleEl ? titleEl.textContent.trim() : 'Lesson';
-        const snippet = lessonSnippets[title] || {lang: 'txt', code: '// No snippet available', output: 'No preview available.'};
-        openSlide(title, snippet.code, snippet.output, snippet.lang, idx);
-      };
-
-      el.addEventListener('click', openHandler);
-      el.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          openHandler();
+  <!-- Swiper init -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const swiper = new Swiper('.mySwiper', {
+        effect: 'fade',
+        fadeEffect: { crossFade: true },
+        spaceBetween: 24,
+        loop: false,
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev'
+        },
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true
+        },
+        keyboard: {
+          enabled: true,
+          onlyInViewport: true
+        },
+        a11y: {
+          enabled: true,
+          prevSlideMessage: 'Previous slide',
+          nextSlideMessage: 'Next slide',
+          firstSlideMessage: 'This is the first slide',
+          lastSlideMessage: 'This is the last slide',
+        },
+        on: {
+          init: function () {
+            // ensure proper height/clipping on init
+            document.querySelectorAll('.swiper-slide').forEach(s => { s.setAttribute('role','group'); });
+          }
         }
       });
-    });
-  }
 
-  let currentIndex = -1;
-
-  function renderSlideByIndex(idx) {
-    if (idx < 0 || idx >= lessonElements.length) return;
-    const el = lessonElements[idx];
-    const titleEl = el.querySelector('h3');
-    const title = titleEl ? titleEl.textContent.trim() : 'Lesson';
-    const snippet = lessonSnippets[title] || {lang: 'txt', code: '// No snippet available', output: 'No preview available.'};
-    document.getElementById('slideTitle').textContent = title;
-    document.getElementById('codeLang').textContent = (snippet.lang || 'txt').toUpperCase();
-    document.getElementById('codeBlock').textContent = snippet.code;
-    document.getElementById('outputBlock').textContent = snippet.output;
-    currentIndex = idx;
-    updateNavButtons();
-  }
-
-  function openSlide(title, code, output, lang, idx) {
-    document.getElementById('slideTitle').textContent = title;
-    document.getElementById('codeLang').textContent = (lang || 'txt').toUpperCase();
-    document.getElementById('codeBlock').textContent = code;
-    document.getElementById('outputBlock').textContent = output;
-    document.getElementById('slideOverlay').classList.remove('hidden');
-    document.getElementById('slideOverlay').classList.add('flex');
-    document.getElementById('slideOverlay').focus();
-    currentIndex = typeof idx === 'number' ? idx : currentIndex;
-    updateNavButtons();
-    // Prevent background scroll
-    document.body.style.overflow = 'hidden';
-    // Attach key handlers
-    document.addEventListener('keydown', handleOverlayKeys);
-  }
-
-  function closeSlide() {
-    document.getElementById('slideOverlay').classList.add('hidden');
-    document.getElementById('slideOverlay').classList.remove('flex');
-    document.body.style.overflow = '';
-    document.removeEventListener('keydown', handleOverlayKeys);
-  }
-
-  function prevSlide() {
-    if (currentIndex > 0) {
-      renderSlideByIndex(currentIndex - 1);
-    }
-  }
-
-  function nextSlide() {
-    if (currentIndex < lessonElements.length - 1) {
-      renderSlideByIndex(currentIndex + 1);
-    }
-  }
-
-  function updateNavButtons() {
-    const prevBtn = document.getElementById('prevSlideBtn');
-    const nextBtn = document.getElementById('nextSlideBtn');
-    prevBtn.disabled = currentIndex <= 0;
-    nextBtn.disabled = currentIndex >= lessonElements.length - 1;
-    prevBtn.classList.toggle('opacity-40', prevBtn.disabled);
-    nextBtn.classList.toggle('opacity-40', nextBtn.disabled);
-  }
-
-  function handleOverlayKeys(e) {
-    if (e.key === 'Escape') closeSlide();
-    else if (e.key === 'ArrowLeft') prevSlide();
-    else if (e.key === 'ArrowRight') nextSlide();
-  }
-
-  // Initialize handlers after DOM
-  document.addEventListener('DOMContentLoaded', () => {
-    attachLessonHandlers();
-  });
-</script>
-
-
-<!-- ===================== FOOTER ===================== -->
-<footer class="bg-navy text-offwhite py-16">
-  <div class="max-w-7xl mx-auto px-6 lg:px-8">
-    <div class="grid md:grid-cols-4 gap-12 mb-12">
-      <div>
-        <div class="flex items-center gap-2.5 mb-4">
-          <div class="w-8 h-8 rounded-lg bg-orange flex items-center justify-center">
-            <i class="ph-bold ph-lightning text-navy text-base"></i>
-          </div>
-          <span class="text-lg font-bold">tithi<span class="text-orange">.ai</span></span>
-        </div>
-        <p class="text-sm text-offwhite/70">Master Enterprise AI from prompt to production.</p>
-      </div>
-      <div>
-        <h4 class="font-semibold mb-4">Quick Links</h4>
-        <ul class="space-y-2 text-sm">
-          <li><a href="index.html" class="text-offwhite/70 hover:text-offwhite transition">Home</a></li>
-          <li><a href="lessons.html" class="text-offwhite/70 hover:text-offwhite transition">Lessons</a></li>
-          <li><a href="login.html" class="text-offwhite/70 hover:text-offwhite transition">Admin Login</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 class="font-semibold mb-4">Support</h4>
-        <ul class="space-y-2 text-sm">
-          <li><a href="#" class="text-offwhite/70 hover:text-offwhite transition">Help Center</a></li>
-          <li><a href="#" class="text-offwhite/70 hover:text-offwhite transition">Contact Us</a></li>
-          <li><a href="#" class="text-offwhite/70 hover:text-offwhite transition">FAQ</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 class="font-semibold mb-4">Legal</h4>
-        <ul class="space-y-2 text-sm">
-          <li><a href="#" class="text-offwhite/70 hover:text-offwhite transition">Privacy Policy</a></li>
-          <li><a href="#" class="text-offwhite/70 hover:text-offwhite transition">Terms of Service</a></li>
-          <li><a href="#" class="text-offwhite/70 hover:text-offwhite transition">Cookie Policy</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="border-t border-offwhite/20 pt-8">
-      <p class="text-center text-sm text-offwhite/60">
-        © 2026 Tithi.ai. All rights reserved. Built with <i class="ph-bold ph-heart text-orange"></i> for aspiring AI professionals.
-      </p>
-    </div>
-
-  </div>
-</footer>
-
-
-<!-- ===================== SCROLL REVEAL JS ===================== -->
-<script>
-  (function () {
-    const els = document.querySelectorAll('.reveal');
-    if (!els.length) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
-          }
+      // Optional: Clicking lesson links in the left sidebar should navigate to the correct slide.
+      // Left links are static placeholders here; attach handlers if those links have data-slide-index attributes.
+      document.querySelectorAll('aside a.lesson-link').forEach((el, i) => {
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          // Map sidebar order to slide indices (for this page we have 3 slides)
+          const mapping = [0,1,2]; // example
+          const idx = mapping[Math.min(i, mapping.length-1)];
+          swiper.slideTo(idx);
         });
-      },
-      { threshold: 0.12 }
-    );
-
-    els.forEach((el) => observer.observe(el));
-  })();
-</script>
-
-<!-- ===================== STICKY NAV SHADOW JS ===================== -->
-<script>
-  (function () {
-    const nav = document.querySelector('nav');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 8) {
-        nav.classList.add('shadow-md');
-      } else {
-        nav.classList.remove('shadow-md');
-      }
+      });
     });
-  })();
-</script>
+  </script>
 
 </body>
 </html>
