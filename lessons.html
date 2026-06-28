@@ -3,25 +3,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Lessons — Tithi.ai</title>
+  <title>Course Dashboard — Tithi.ai</title>
 
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js" defer></script>
 
-  <!-- Swiper CSS & JS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js" defer></script>
 
   <script>
-    // Tailwind custom config
     tailwind.config = {
       theme: {
         extend: {
@@ -31,9 +26,11 @@
           },
           colors: {
             navy: '#0A2947',
+            navyDark: '#051626',
             ice: '#AACCD6',
             orange: '#FF6A1C',
-            offwhite: '#FAF6F0'
+            offwhite: '#FAF6F0',
+            white: '#FFFFFF'
           }
         }
       }
@@ -41,303 +38,196 @@
   </script>
 
   <style>
-    /* Page-level rules */
     html, body { height: 100%; }
-    body { background: #FAF6F0; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; overflow: hidden; }
+    body { background: #FAF6F0; overflow: hidden; }
 
-    /* Swiper nav & bullets custom styling */
-    .swiper-button-next,
-    .swiper-button-prev {
-      width: 44px;
-      height: 44px;
-      border-radius: 4px;
-      background-color: #FF6A1C;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 6px 18px rgba(10,41,71,0.12);
+    /* Swiper Styling */
+    .swiper-button-next, .swiper-button-prev {
+      width: 44px; height: 44px; border-radius: 8px; background-color: #0A2947; color: #FAF6F0;
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(10, 41, 71, 0.1);
     }
-    .swiper-button-next::after, .swiper-button-prev::after { content: none; } /* hide default arrow */
-    .swiper-pagination-bullet {
-      width: 10px;
-      height: 10px;
-      background: #E5E7EB;
-      opacity: 1;
-      border-radius: 9999px;
-      margin: 0 6px !important;
-    }
-    .swiper-pagination-bullet-active {
-      background: #FF6A1C;
-      transform: scale(1.15);
-    }
+    .swiper-button-next:hover, .swiper-button-prev:hover { background-color: #FF6A1C; transform: translateY(-2px); }
+    .swiper-button-next::after, .swiper-button-prev::after { content: none; }
+    
+    .swiper-pagination-bullet { width: 8px; height: 8px; background: #AACCD6; opacity: 1; margin: 0 6px !important; transition: all 0.3s ease; }
+    .swiper-pagination-bullet-active { background: #FF6A1C; width: 24px; border-radius: 4px; }
 
-    /* Mock IDE code styling */
-    .ide-window {
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 18px 40px rgba(10,41,71,0.12);
+    /* IDE Mockup - Light Theme Academic Palette */
+    .ide-window { 
+      border-radius: 12px; 
+      border: 1px solid rgba(10, 41, 71, 0.15); /* Navy border with low opacity */
+      background-color: #FFFFFF; 
+      box-shadow: 0 20px 40px rgba(10, 41, 71, 0.08); /* Soft Navy shadow */
+      width: 100%;
+      overflow: hidden; 
     }
-    .ide-topbar {
-      height: 42px;
-      background: linear-gradient(180deg,#0f1724,#081226);
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding: 0 12px;
-      color: #cbd5e1;
-      font-size: 13px;
+    .ide-topbar { 
+      height: 48px; 
+      background: #FAF6F0; /* Offwhite header */
+      display: flex; 
+      align-items: center; 
+      padding: 0 16px; 
+      border-bottom: 1px solid rgba(10, 41, 71, 0.1);
     }
-    .ide-tabs { display:flex; gap:8px; align-items:center; }
-    .ide-tab { padding:6px 10px; border-radius:6px; background:rgba(255,255,255,0.02); color:#e6eef8; font-family: 'JetBrains Mono', monospace; font-size:13px; }
-    .ide-editor {
-      background: #0b1220;
-      color: #d8eefe;
-      padding: 18px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      line-height:1.6;
-      overflow:auto;
-      max-height:420px;
+    .ide-tab { 
+      padding: 8px 16px; 
+      background: #FFFFFF; 
+      color: #0A2947; /* Navy Text */
+      font-family: 'JetBrains Mono', monospace; 
+      font-size: 13px; 
+      font-weight: 600;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      border-top: 2px solid #FF6A1C; /* Orange Accent */
+      margin-top: 8px;
+      border-left: 1px solid rgba(10, 41, 71, 0.1);
+      border-right: 1px solid rgba(10, 41, 71, 0.1);
     }
+    .ide-editor { 
+      padding: 24px; 
+      font-family: 'JetBrains Mono', monospace; 
+      font-size: 14px; 
+      line-height: 1.7; 
+      color: #0A2947; /* Navy Text */
+      overflow-x: auto; 
+      width: 100%;
+      background: #FFFFFF;
+    }
+    .ide-editor::-webkit-scrollbar { height: 8px; }
+    .ide-editor::-webkit-scrollbar-track { background: #FAF6F0; }
+    .ide-editor::-webkit-scrollbar-thumb { background: #AACCD6; border-radius: 4px; }
+    
+    /* Syntax Highlighting - Light Theme */
+    .syn-keyword { color: #FF6A1C; font-weight: 700; } /* Orange */
+    .syn-string { color: #0A2947; opacity: 0.8; font-weight: 500; } /* Soft Navy */
+    .syn-comment { color: rgba(10, 41, 71, 0.45); font-style: italic; } /* Faded Navy */
+    .syn-punctuation { color: rgba(10, 41, 71, 0.6); } /* Semi-transparent Navy */
+    .syn-property { color: #0A2947; font-weight: 700; } /* Bold Navy */
 
-    /* Left sidebar scroll area */
-    .sidebar-scroll { max-height: calc(100vh - 96px); overflow:auto; padding-right: 8px; }
-    .module-title { font-weight: 700; color: #0A2947; }
-    .lesson-link { display:block; padding:10px 12px; border-radius:8px; color:#0A2947; }
-    .lesson-link[aria-current="true"] { background: #FF6A1C; color: #fff; font-weight:600; }
+    /* Sidebar Scroll */
+    .sidebar-scroll { max-height: calc(100vh - 180px); overflow-y: auto; padding-right: 8px; }
+    .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: #AACCD6; border-radius: 4px; }
   </style>
 </head>
-<body class="h-screen flex flex-col">
+<body class="flex flex-col">
 
-  <!-- Top Navbar (fixed) -->
-  <header class="fixed top-0 left-0 right-0 bg-offwhite/95 backdrop-blur border-b border-ice/30 z-40">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <a href="index.html" class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-lg bg-orange flex items-center justify-center text-white font-bold">t</div>
-          <span class="text-lg font-bold text-navy">tithi<span class="text-orange">.ai</span></span>
-        </a>
-        <div class="h-6 w-px bg-ice/60"></div>
-        <nav class="hidden sm:flex items-center gap-6 text-sm text-navy/70">
-          <a href="index.html" class="hover:text-navy">Home</a>
-          <a href="lessons.html" class="font-semibold text-navy">Lessons</a>
-          <a href="index.html#curriculum" class="hover:text-navy">Curriculum</a>
-        </nav>
-      </div>
+  <header class="h-16 flex-shrink-0 bg-white border-b border-ice/40 z-40 flex items-center justify-between px-4 lg:px-8">
+    <div class="flex items-center gap-4">
+      <button id="mobile-menu-btn" class="lg:hidden p-2 text-navy hover:bg-offwhite rounded-lg transition-colors">
+        <i class="ph-bold ph-list text-xl"></i>
+      </button>
 
-      <div class="flex items-center gap-3">
-        <div class="hidden sm:flex items-center gap-3 text-sm text-navy/80 bg-white px-3 py-1.5 rounded-md border border-ice/40">
-          <div class="w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-semibold">DK</div>
-          <div class="text-sm leading-4">
-            <div class="font-semibold text-navy">David Kim</div>
-            <div class="text-xs text-navy/60">Instructor</div>
-          </div>
+      <a href="index.html" class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-orange flex items-center justify-center text-white font-bold"><i class="ph-bold ph-lightning text-white"></i></div>
+        <span class="text-lg font-bold text-navy hidden sm:block">tithi<span class="text-orange">.ai</span></span>
+      </a>
+      
+      <div class="hidden sm:block h-5 w-px bg-ice/60 mx-2"></div>
+      <span class="hidden sm:block text-sm font-medium text-navy/60">Enterprise AI Masterclass</span>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-3 text-sm text-navy bg-offwhite px-3 py-1.5 rounded-lg border border-ice/40">
+        <div class="text-right hidden sm:block">
+          <div class="font-semibold leading-tight">Student Portal</div>
+          <div class="text-xs text-navy/60">IT Professional Track</div>
         </div>
+        <div class="w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-xs">IT</div>
       </div>
     </div>
   </header>
 
-  <!-- Main layout -->
-  <div class="flex-1 pt-16 flex overflow-hidden">
+  <div class="flex flex-1 overflow-hidden relative">
 
-    <!-- Left Sidebar (Index) - hidden on small screens -->
-    <aside class="hidden lg:block w-72 bg-white border-r border-ice/30 p-6">
-      <div class="space-y-6">
-        <!-- Current progress -->
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <div class="text-xs font-semibold text-navy/70">Current Progress</div>
-            <div class="text-xs text-navy/60">35%</div>
-          </div>
-          <div class="w-full bg-ice/40 rounded-full h-3">
-            <div class="h-3 rounded-full bg-orange" style="width:35%"></div>
+    <aside id="sidebar" class="absolute lg:static inset-y-0 left-0 w-80 bg-white border-r border-ice/40 p-6 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-30 shadow-2xl lg:shadow-none flex flex-col">
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-navy/50">Course Progress</span>
+          <span class="text-xs font-bold text-orange" id="progress-text">10%</span>
+        </div>
+        <div class="w-full bg-ice/30 rounded-full h-2 overflow-hidden">
+          <div class="h-full bg-orange transition-all duration-1000" id="progress-bar" style="width:10%"></div>
+        </div>
+      </div>
+
+      <div class="sidebar-scroll flex-1">
+        <div class="mb-8">
+          <h3 class="text-sm font-bold text-navy mb-3">Module 01: Prompt Engineering</h3>
+          <div class="space-y-1">
+            <button data-lesson="m1-l1" class="lesson-btn w-full flex items-center gap-3 p-2.5 rounded-lg bg-orange/10 border border-orange/20 text-sm font-semibold text-orange transition-colors">
+              <i class="ph-fill ph-play-circle text-orange text-lg"></i>
+              <span>Advanced Prompt Design</span>
+            </button>
           </div>
         </div>
 
-        <!-- Modules & Lessons (scrollable) -->
-        <div class="sidebar-scroll">
-          <div class="mb-6">
-            <div class="module-title mb-3">Module 01 — AI Foundations</div>
-            <div class="space-y-2">
-              <a href="#" class="lesson-link" aria-current="true">What is AI?</a>
-              <a href="#" class="lesson-link">LLMs Explained</a>
-              <a href="#" class="lesson-link">Responsible AI</a>
-              <a href="#" class="lesson-link">AI Use Cases</a>
-              <a href="#" class="lesson-link">Quick Wins</a>
-            </div>
+        <div class="mb-8">
+          <h3 class="text-sm font-bold text-navy mb-3">Module 02: Agentic AI</h3>
+          <div class="space-y-1">
+            <button data-lesson="m2-l1" class="lesson-btn w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-offwhite text-sm text-navy/70 transition-colors">
+              <i class="ph-bold ph-lock-key text-navy/30 text-lg icon-status"></i>
+              <span>The ReAct Framework</span>
+            </button>
           </div>
-
-          <div class="mb-6">
-            <div class="module-title mb-3">Module 02 — Prompt Engineering</div>
-            <div class="space-y-2">
-              <a href="#" class="lesson-link">Prompt Basics</a>
-              <a href="#" class="lesson-link">Advanced Techniques</a>
-              <a href="#" class="lesson-link">Role-Specific Prompts</a>
-              <a href="#" class="lesson-link">Testing & Iteration</a>
-              <a href="#" class="lesson-link">Hands-on Lab</a>
-            </div>
-          </div>
-
-          <div class="mb-6">
-            <div class="module-title mb-3">Module 03 — Developer Tools</div>
-            <div class="space-y-2">
-              <a href="#" class="lesson-link">AI Coding Assistants</a>
-              <a href="#" class="lesson-link">LLM API Integration</a>
-              <a href="#" class="lesson-link">RAG Systems</a>
-            </div>
+        </div>
+        
+        <div class="mb-8">
+          <h3 class="text-sm font-bold text-navy mb-3">Module 03: Orchestration</h3>
+          <div class="space-y-1">
+            <button data-lesson="m3-l1" class="lesson-btn w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-offwhite text-sm text-navy/70 transition-colors">
+              <i class="ph-bold ph-lock-key text-navy/30 text-lg icon-status"></i>
+              <span>Building Pipelines</span>
+            </button>
           </div>
         </div>
       </div>
     </aside>
 
-    <!-- Main Stage (Right side) -->
-    <main class="flex-1 p-6 overflow-auto">
-      <div class="max-w-6xl mx-auto">
+    <div id="sidebar-overlay" class="fixed inset-0 bg-navy/20 backdrop-blur-sm z-20 hidden lg:hidden"></div>
 
-        <!-- Lesson header -->
-        <div class="mb-6">
-          <div class="flex items-center justify-between">
+    <main class="flex-1 bg-offwhite p-4 lg:p-10 overflow-y-auto overflow-x-hidden w-full">
+      <div class="max-w-5xl mx-auto flex flex-col w-full">
+
+        <div class="mb-8 flex-shrink-0 w-full">
+          <div class="flex items-center gap-2 text-xs font-bold text-navy/40 uppercase tracking-widest mb-3">
+            <span id="header-module">Module 01</span>
+            <i class="ph-bold ph-caret-right"></i>
+            <span class="text-orange" id="header-lesson">Lesson 01</span>
+          </div>
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <div class="text-xs uppercase font-semibold text-navy/60">Module 01 • Lesson 01</div>
-              <h1 class="text-3xl font-extrabold text-navy leading-tight">What is AI?</h1>
-              <p class="text-sm text-navy/70 mt-2">Introduction to core AI concepts and a small code demonstration.</p>
+              <h1 class="text-3xl md:text-4xl font-extrabold text-navy tracking-tight" id="header-title">Advanced Prompt Design</h1>
+              <p class="text-base text-navy/70 mt-2 max-w-2xl" id="header-desc">Mastering System Prompts, Few-Shot rendering, and Chain-of-Thought.</p>
             </div>
-            <div class="hidden md:flex items-center gap-3">
-              <button class="px-4 py-2 rounded-lg bg-navy text-white text-sm">Mark Complete</button>
-              <button class="px-3 py-2 rounded-lg border border-ice/40 text-navy text-sm">Resources</button>
-            </div>
+            <button class="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg border-2 border-ice text-navy font-semibold hover:border-navy transition-colors bg-white shadow-sm flex-shrink-0">
+              <i class="ph-bold ph-code text-lg"></i>
+              API Docs
+            </button>
           </div>
         </div>
 
-        <!-- Swiper container (card-like) -->
-        <div class="ide-window bg-white ide-window overflow-visible rounded-xl p-6">
-          <div class="max-w-full">
-            <!-- Swiper -->
-            <div class="swiper mySwiper">
-              <div class="swiper-wrapper">
-
-                <!-- Slide 1: Concept -->
-                <div class="swiper-slide p-6">
-                  <div class="bg-offwhite rounded-lg p-6 border border-ice/50">
-                    <h2 class="text-xl font-semibold text-navy mb-3">Concept</h2>
-                    <p class="text-sm text-navy/70 mb-4">
-                      Artificial Intelligence (AI) refers to systems that perform tasks which normally require human intelligence.
-                      In modern practice this often means statistical models trained on data (e.g., neural networks) that can make predictions or generate content.
-                    </p>
-
-                    <blockquote class="border-l-4 border-orange pl-4 italic text-navy/80 bg-white/60 p-4 rounded-md">
-                      "AI is not magic — it's applied statistics, engineering, and careful product design."
-                    </blockquote>
-
-                    <ul class="mt-4 text-sm text-navy/70 space-y-2">
-                      <li>• Models learn patterns from data</li>
-                      <li>• Quality of data strongly influences results</li>
-                      <li>• Responsible deployment requires monitoring and guardrails</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <!-- Slide 2: Parameters -->
-                <div class="swiper-slide p-6">
-                  <div class="bg-white rounded-lg p-6 border border-ice/50">
-                    <h2 class="text-xl font-semibold text-navy mb-4">Key API Parameters</h2>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div class="p-4 rounded-lg border border-ice/40 bg-offwhite">
-                        <div class="flex items-center justify-between mb-2">
-                          <div class="text-sm font-semibold text-navy">Temperature</div>
-                          <div class="text-xs font-mono text-navy/60">0.0 - 1.0</div>
-                        </div>
-                        <p class="text-sm text-navy/70">
-                          Controls randomness. Lower values make outputs more deterministic; higher values increase creativity and unpredictability.
-                        </p>
-                        <div class="mt-3">
-                          <div class="w-full bg-ice/30 h-2 rounded-full">
-                            <div class="h-2 bg-orange rounded-full" style="width:45%"></div>
-                          </div>
-                          <div class="text-xs mt-2 text-navy/60">Example: 0.2 — precise; 0.8 — creative</div>
-                        </div>
-                      </div>
-
-                      <div class="p-4 rounded-lg border border-ice/40 bg-offwhite">
-                        <div class="flex items-center justify-between mb-2">
-                          <div class="text-sm font-semibold text-navy">Top_P (nucleus sampling)</div>
-                          <div class="text-xs font-mono text-navy/60">0.0 - 1.0</div>
-                        </div>
-                        <p class="text-sm text-navy/70">
-                          Limits tokens to a probability mass. Use instead of/in combination with Temperature for more controlled randomness.
-                        </p>
-                        <div class="mt-3">
-                          <div class="w-full bg-ice/30 h-2 rounded-full">
-                            <div class="h-2 bg-navy rounded-full" style="width:25%"></div>
-                          </div>
-                          <div class="text-xs mt-2 text-navy/60">Example: 0.9 — broad sampling; 0.1 — narrow sampling</div>
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-
-                <!-- Slide 3: Code Example (dark-themed mock IDE) -->
-                <div class="swiper-slide p-6">
-                  <div class="rounded-lg overflow-hidden border border-ice/40 ide-window">
-                    <div class="ide-topbar">
-                      <div class="ide-tabs">
-                        <div class="ide-tab">index.js</div>
-                        <div class="ide-tab">app.js</div>
-                      </div>
-                      <div class="ml-auto text-xs text-navy/40">JS • 12 lines</div>
-                    </div>
-
-                    <div class="ide-editor">
-<pre style="margin:0;">
-// Simple example: call LLM API (pseudocode)
-async function summarize(text) {
-  const resp = await fetch('/api/llm', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      prompt: `Summarize the text in one paragraph:\n\n${text}`,
-      temperature: 0.2,
-      top_p: 0.9
-    })
-  });
-  const data = await resp.json();
-  return data.output;
-}
-
-// usage
-summarize("Long article...").then(console.log);
-</pre>
-                    </div>
-                  </div>
-                </div>
-
+        <div class="bg-white rounded-2xl p-6 md:p-10 shadow-lg border border-ice/30 w-full overflow-hidden">
+          <div class="swiper mySwiper w-full">
+            <div class="swiper-wrapper" id="slide-container">
               </div>
+          </div>
 
-              <!-- Swiper navigation & pagination -->
-              <div class="flex items-center justify-between mt-6">
-                <div class="flex items-center gap-4">
-                  <div class="swiper-pagination"></div>
-                </div>
-                <div class="flex items-center gap-3">
-                  <div class="swiper-button-prev" aria-label="Previous slide">
-                    <!-- custom arrow -->
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
-                      <path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </div>
-                  <div class="swiper-button-next" aria-label="Next slide">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
-                      <path d="M9 6l6 6-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </div>
-                </div>
+          <div class="mt-8 pt-6 border-t border-ice/30 flex flex-col sm:flex-row items-center justify-between gap-6 w-full">
+            <div class="flex items-center gap-6 w-full sm:w-auto justify-center sm:justify-start">
+              <div class="swiper-button-prev relative w-11 h-11 right-auto left-auto top-auto mt-0 bg-white border-2 border-ice hover:border-orange hover:bg-orange hover:text-white text-navy rounded-lg cursor-pointer">
+                <i class="ph-bold ph-caret-left text-lg"></i>
               </div>
-
+              <div class="swiper-pagination relative w-auto bottom-auto"></div>
+              <div class="swiper-button-next relative w-11 h-11 right-auto left-auto top-auto mt-0 bg-white border-2 border-ice hover:border-orange hover:bg-orange hover:text-white text-navy rounded-lg cursor-pointer">
+                <i class="ph-bold ph-caret-right text-lg"></i>
+              </div>
             </div>
+            <button id="mark-complete-btn" class="w-full sm:w-auto px-8 py-3.5 bg-orange hover:bg-[#e55f17] text-white font-bold rounded-lg shadow-md shadow-orange/20 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
+              Mark Complete & Continue
+              <i class="ph-bold ph-check-circle text-lg"></i>
+            </button>
           </div>
         </div>
 
@@ -345,52 +235,231 @@ summarize("Long article...").then(console.log);
     </main>
   </div>
 
-  <!-- Swiper init -->
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const swiper = new Swiper('.mySwiper', {
-        effect: 'fade',
-        fadeEffect: { crossFade: true },
-        spaceBetween: 24,
-        loop: false,
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
-        },
-        pagination: {
-          el: '.swiper-pagination',
-          clickable: true
-        },
-        keyboard: {
-          enabled: true,
-          onlyInViewport: true
-        },
-        a11y: {
-          enabled: true,
-          prevSlideMessage: 'Previous slide',
-          nextSlideMessage: 'Next slide',
-          firstSlideMessage: 'This is the first slide',
-          lastSlideMessage: 'This is the last slide',
-        },
-        on: {
-          init: function () {
-            // ensure proper height/clipping on init
-            document.querySelectorAll('.swiper-slide').forEach(s => { s.setAttribute('role','group'); });
-          }
-        }
-      });
+    const courseData = {
+      "m1-l1": {
+        module: "Module 01", lesson: "Lesson 01",
+        title: "Advanced Prompt Design",
+        desc: "Mastering System Prompts, Few-Shot rendering, and Chain-of-Thought for production environments.",
+        slides: [
+          `
+          <div class="swiper-slide cursor-grab active:cursor-grabbing w-full">
+            <div class="bg-white flex flex-col w-full">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange/10 text-orange text-xs font-bold uppercase tracking-wider mb-6 self-start">
+                <i class="ph-bold ph-lightbulb"></i> Core Concept
+              </div>
+              <h2 class="text-3xl font-extrabold text-navy mb-4">Chain of Thought (CoT)</h2>
+              <p class="text-lg text-navy/70 leading-relaxed max-w-3xl mb-8">
+                For complex logic tasks, forcing the LLM to output its step-by-step reasoning <strong>before</strong> outputting the final answer dramatically reduces hallucinations and improves accuracy.
+              </p>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                <div class="p-6 rounded-xl border border-red-200 bg-red-50/50">
+                  <div class="flex items-center gap-2 text-red-600 font-bold mb-3"><i class="ph-bold ph-x-circle"></i> Standard Prompt (Higher Error)</div>
+                  <p class="text-sm text-navy/70 italic">"What is the total cost of 3 apples at $2 each and 4 bananas at $1 each?"</p>
+                </div>
+                <div class="p-6 rounded-xl border border-green-200 bg-green-50/50">
+                  <div class="flex items-center gap-2 text-green-600 font-bold mb-3"><i class="ph-bold ph-check-circle"></i> CoT Prompt (High Accuracy)</div>
+                  <p class="text-sm text-navy/70 italic">"What is the total cost of 3 apples at $2 each and 4 bananas at $1 each? <strong>Let's think step by step.</strong>"</p>
+                </div>
+              </div>
+            </div>
+          </div>`,
+          `
+          <div class="swiper-slide cursor-grab active:cursor-grabbing w-full">
+            <div class="bg-white flex flex-col w-full">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ice/20 text-navy text-xs font-bold uppercase tracking-wider mb-6 self-start">
+                <i class="ph-bold ph-sliders"></i> Configuration
+              </div>
+              <h2 class="text-3xl font-extrabold text-navy mb-8">API Parameters in Production</h2>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+                <div class="p-8 rounded-2xl border border-ice/40 bg-offwhite hover:border-orange/50 transition-colors group">
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="font-extrabold text-navy text-lg flex items-center gap-2"><i class="ph-fill ph-thermometer text-orange text-2xl group-hover:scale-110 transition-transform"></i> Temperature</div>
+                    <div class="px-2 py-1 bg-white border border-ice/50 rounded text-xs font-mono font-bold text-navy/60">0.0 - 1.0</div>
+                  </div>
+                  <p class="text-sm text-navy/70 mb-6 leading-relaxed">Controls randomness. Lower values make outputs focused and deterministic; higher values increase creativity.</p>
+                  <div class="w-full bg-ice/30 h-2 rounded-full mb-3 overflow-hidden"><div class="h-full bg-orange rounded-full" style="width:20%"></div></div>
+                  <div class="flex justify-between text-xs text-navy/50 font-bold uppercase tracking-wide"><span>Deterministic (0.2)</span><span>Creative (0.8)</span></div>
+                </div>
+                
+                <div class="p-8 rounded-2xl border border-ice/40 bg-offwhite hover:border-navy/50 transition-colors group">
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="font-extrabold text-navy text-lg flex items-center gap-2"><i class="ph-fill ph-chart-scatter text-navy text-2xl group-hover:scale-110 transition-transform"></i> Top_P</div>
+                    <div class="px-2 py-1 bg-white border border-ice/50 rounded text-xs font-mono font-bold text-navy/60">0.0 - 1.0</div>
+                  </div>
+                  <p class="text-sm text-navy/70 mb-6 leading-relaxed">Nucleus sampling. Limits tokens to a probability mass. Alter this or Temperature, but rarely both in production.</p>
+                  <div class="w-full bg-ice/30 h-2 rounded-full mb-3 overflow-hidden"><div class="h-full bg-navy rounded-full" style="width:80%"></div></div>
+                  <div class="flex justify-between text-xs text-navy/50 font-bold uppercase tracking-wide"><span>Narrow (0.1)</span><span>Broad (0.9)</span></div>
+                </div>
+              </div>
+            </div>
+          </div>`,
+          `
+          <div class="swiper-slide cursor-grab active:cursor-grabbing w-full">
+             <div class="bg-white flex flex-col w-full">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy/10 text-navy text-xs font-bold uppercase tracking-wider mb-6 self-start">
+                <i class="ph-bold ph-code"></i> Implementation
+              </div>
+              <h2 class="text-3xl font-extrabold text-navy mb-6">Structuring the Payload</h2>
+              <div class="ide-window flex flex-col min-w-0">
+                <div class="ide-topbar flex-shrink-0">
+                  <div class="flex gap-2">
+                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                  </div>
+                  <div class="ml-4 flex items-center h-full">
+                    <div class="ide-tab">system_prompt.js</div>
+                  </div>
+                  <div class="ml-auto flex items-center gap-2 text-xs text-navy/50 hover:text-orange cursor-pointer transition-colors">
+                    <i class="ph-bold ph-copy"></i> Copy Code
+                  </div>
+                </div>
+                <div class="ide-editor w-full">
+<pre style="margin:0;"><span class="syn-keyword">const</span> payload <span class="syn-punctuation">=</span> {
+  <span class="syn-property">model</span><span class="syn-punctuation">:</span> <span class="syn-string">"gpt-4-turbo"</span><span class="syn-punctuation">,</span>
+  <span class="syn-property">temperature</span><span class="syn-punctuation">:</span> <span class="syn-keyword">0.1</span><span class="syn-punctuation">,</span> <span class="syn-comment">// Highly deterministic for IT architecture</span>
+  <span class="syn-property">messages</span><span class="syn-punctuation">:</span> <span class="syn-punctuation">[</span>
+    { 
+      <span class="syn-property">role</span><span class="syn-punctuation">:</span> <span class="syn-string">"system"</span><span class="syn-punctuation">,</span> 
+      <span class="syn-property">content</span><span class="syn-punctuation">:</span> <span class="syn-string">"You are an expert IT architect. Output strictly valid JSON. \nReason step-by-step before answering."</span> 
+    }<span class="syn-punctuation">,</span>
+    { 
+      <span class="syn-property">role</span><span class="syn-punctuation">:</span> <span class="syn-string">"user"</span><span class="syn-punctuation">,</span> 
+      <span class="syn-property">content</span><span class="syn-punctuation">:</span> <span class="syn-string">"Design a scalable AWS architecture for a chat app."</span> 
+    }
+  <span class="syn-punctuation">]</span>
+}<span class="syn-punctuation">;</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>`
+        ]
+      },
+      "m2-l1": {
+        module: "Module 02", lesson: "Lesson 01",
+        title: "The ReAct Framework",
+        desc: "Building Agentic AI that can Reason and Act using external APIs and tools.",
+        slides: [
+          `
+          <div class="swiper-slide cursor-grab active:cursor-grabbing w-full">
+            <div class="bg-white flex flex-col items-center text-center px-10 w-full">
+              <div class="w-20 h-20 bg-navy/5 rounded-2xl flex items-center justify-center mb-8 border border-ice/30">
+                <i class="ph-bold ph-robot text-navy text-4xl"></i>
+              </div>
+              <h2 class="text-3xl font-extrabold text-navy mb-6">What is an AI Agent?</h2>
+              <p class="text-lg text-navy/70 leading-relaxed max-w-2xl mb-10">
+                While standard LLMs only generate text based on training data, Agents have access to external <strong>Tools</strong> (like calculators, web browsers, or SQL databases) to interact with the real world.
+              </p>
+              <div class="flex flex-col sm:flex-row gap-6 w-full max-w-3xl">
+                <div class="flex-1 p-6 bg-offwhite rounded-xl border border-ice/40 text-left">
+                  <div class="font-bold text-orange mb-2 uppercase tracking-wide text-sm">Step 1</div>
+                  <div class="font-extrabold text-navy text-lg mb-1">Reasoning</div>
+                  <div class="text-sm text-navy/60">LLM decides what tool is needed.</div>
+                </div>
+                <div class="flex-1 p-6 bg-offwhite rounded-xl border border-ice/40 text-left">
+                  <div class="font-bold text-orange mb-2 uppercase tracking-wide text-sm">Step 2</div>
+                  <div class="font-extrabold text-navy text-lg mb-1">Acting</div>
+                  <div class="text-sm text-navy/60">LLM executes the API call.</div>
+                </div>
+                <div class="flex-1 p-6 bg-offwhite rounded-xl border border-ice/40 text-left">
+                  <div class="font-bold text-orange mb-2 uppercase tracking-wide text-sm">Step 3</div>
+                  <div class="font-extrabold text-navy text-lg mb-1">Observing</div>
+                  <div class="text-sm text-navy/60">LLM reads output and responds.</div>
+                </div>
+              </div>
+            </div>
+          </div>`
+        ]
+      },
+      "m3-l1": {
+        module: "Module 03", lesson: "Lesson 01",
+        title: "Building Pipelines",
+        desc: "Orchestrating complex RAG pipelines using LangChain and Semantic Routing.",
+        slides: [
+          `
+          <div class="swiper-slide cursor-grab active:cursor-grabbing w-full">
+            <div class="bg-white flex flex-col w-full">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ice/20 text-navy text-xs font-bold uppercase tracking-wider mb-6 self-start">
+                <i class="ph-bold ph-git-merge"></i> Architecture
+              </div>
+              <h2 class="text-3xl font-extrabold text-navy mb-4">Semantic Routing</h2>
+              <p class="text-lg text-navy/70 leading-relaxed max-w-3xl mb-8">
+                In production, you don't send every user query to the same heavy LLM. You use a fast embedding model to classify the user's intent, and route the prompt to the most efficient subsystem.
+              </p>
+              <div class="p-8 bg-offwhite rounded-xl border border-ice/40 border-l-4 border-l-orange w-full">
+                <h4 class="font-bold text-navy mb-2">Pro Tip for IT Architects:</h4>
+                <p class="text-sm text-navy/70">Route simple queries (e.g., "reset password") to a cheap model (like GPT-3.5) and reserve expensive models (GPT-4) only for complex coding or reasoning tasks to optimize cloud costs.</p>
+              </div>
+            </div>
+          </div>`
+        ]
+      }
+    };
 
-      // Optional: Clicking lesson links in the left sidebar should navigate to the correct slide.
-      // Left links are static placeholders here; attach handlers if those links have data-slide-index attributes.
-      document.querySelectorAll('aside a.lesson-link').forEach((el, i) => {
-        el.addEventListener('click', (e) => {
-          e.preventDefault();
-          // Map sidebar order to slide indices (for this page we have 3 slides)
-          const mapping = [0,1,2]; // example
-          const idx = mapping[Math.min(i, mapping.length-1)];
-          swiper.slideTo(idx);
+    document.addEventListener('DOMContentLoaded', function () {
+      let swiperInstance;
+      const slideContainer = document.getElementById('slide-container');
+      const lessonButtons = document.querySelectorAll('.lesson-btn');
+
+      function initSwiper() {
+        if(swiperInstance) swiperInstance.destroy(true, true);
+        swiperInstance = new Swiper('.mySwiper', {
+          spaceBetween: 40,
+          grabCursor: true,
+          autoHeight: true, 
+          navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+          pagination: { el: '.swiper-pagination', clickable: true },
+          keyboard: { enabled: true }
+        });
+      }
+
+      function loadLesson(lessonId) {
+        const data = courseData[lessonId];
+        if(!data) return;
+
+        document.getElementById('header-module').textContent = data.module;
+        document.getElementById('header-lesson').textContent = data.lesson;
+        document.getElementById('header-title').textContent = data.title;
+        document.getElementById('header-desc').textContent = data.desc;
+
+        slideContainer.innerHTML = data.slides.join('');
+        
+        setTimeout(() => { initSwiper(); }, 50);
+
+        lessonButtons.forEach(btn => {
+          const icon = btn.querySelector('i');
+          if(btn.dataset.lesson === lessonId) {
+            btn.className = "lesson-btn w-full flex items-center gap-3 p-3 rounded-xl bg-orange/10 border border-orange/20 text-sm font-semibold text-orange transition-colors";
+            icon.className = "ph-fill ph-play-circle text-orange text-xl icon-status";
+          } else {
+            btn.className = "lesson-btn w-full flex items-center gap-3 p-3 rounded-xl hover:bg-offwhite text-sm text-navy/70 transition-colors";
+            icon.className = "ph-bold ph-check-circle text-green-500 text-xl icon-status";
+          }
+        });
+      }
+
+      lessonButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          loadLesson(e.currentTarget.dataset.lesson);
         });
       });
+
+      loadLesson('m1-l1');
+
+      const mobileBtn = document.getElementById('mobile-menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+
+      function toggleSidebar() {
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+      }
+
+      mobileBtn.addEventListener('click', toggleSidebar);
+      overlay.addEventListener('click', toggleSidebar);
     });
   </script>
 
