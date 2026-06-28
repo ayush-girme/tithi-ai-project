@@ -1,13 +1,13 @@
-<!doctype html>
-<html lang="en" class="h-full">
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Course Dashboard — Tithi.ai</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tithi.ai — The Advanced AI Masterclass</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
 
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -26,442 +26,249 @@
           },
           colors: {
             navy: '#0A2947',
-            navyDark: '#051626',
             ice: '#AACCD6',
             orange: '#FF6A1C',
             offwhite: '#FAF6F0',
-            white: '#FFFFFF'
-          }
-        }
-      }
+          },
+        },
+      },
     };
   </script>
 
   <style>
-    html, body { height: 100%; }
-    body { background: #FAF6F0; overflow: hidden; }
+    html { font-family: 'Inter', sans-serif; }
 
-    /* Swiper Styling */
+    .nav-link { position: relative; }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
+      background-color: #FF6A1C; transition: width 0.22s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #FF6A1C 0%, #ff8c4c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .feature-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(10, 41, 71, 0.08); }
+
+    .logo-item { filter: grayscale(100%) opacity(0.45); transition: filter 0.2s; }
+    .logo-item:hover { filter: grayscale(0%) opacity(1); }
+
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 0 0 0 rgba(255, 106, 28, 0.35); }
+      70%  { box-shadow: 0 0 0 10px rgba(255, 106, 28, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 106, 28, 0); }
+    }
+    .pulse-badge { animation: pulse-ring 2.4s ease-out infinite; }
+    .stat-block { border-left: 3px solid #FF6A1C; }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* --- Swiper & IDE Styles Imported from Lessons --- */
     .swiper-button-next, .swiper-button-prev {
-      width: 44px; height: 44px; border-radius: 8px; background-color: #0A2947; color: #FAF6F0;
-      display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(10, 41, 71, 0.1);
+      width: 44px; height: 44px; border-radius: 4px; background-color: #FF6A1C; color: #fff;
+      display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(10,41,71,0.12);
     }
-    .swiper-button-next:hover, .swiper-button-prev:hover { background-color: #FF6A1C; transform: translateY(-2px); }
-    .swiper-button-next::after, .swiper-button-prev::after { content: none; }
+    .swiper-button-next::after, .swiper-button-prev::after { content: none; } 
+    .swiper-pagination-bullet {
+      width: 10px; height: 10px; background: #E5E7EB; opacity: 1; border-radius: 9999px; margin: 0 6px !important;
+    }
+    .swiper-pagination-bullet-active { background: #FF6A1C; transform: scale(1.15); }
     
-    .swiper-pagination-bullet { width: 8px; height: 8px; background: #AACCD6; opacity: 1; margin: 0 6px !important; transition: all 0.3s ease; }
-    .swiper-pagination-bullet-active { background: #FF6A1C; width: 24px; border-radius: 4px; }
-
-    /* IDE Mockup - Light Theme Academic Palette */
-    .ide-window { 
-      border-radius: 12px; 
-      border: 1px solid rgba(10, 41, 71, 0.15); /* Navy border with low opacity */
-      background-color: #FFFFFF; 
-      box-shadow: 0 20px 40px rgba(10, 41, 71, 0.08); /* Soft Navy shadow */
-      width: 100%;
-      overflow: hidden; 
+    .ide-window { border-radius: 10px; overflow: hidden; box-shadow: 0 18px 40px rgba(10,41,71,0.12); }
+    .ide-topbar {
+      height: 42px; background: linear-gradient(180deg,#0f1724,#081226); display:flex; align-items:center;
+      gap:10px; padding: 0 12px; color: #cbd5e1; font-size: 13px;
     }
-    .ide-topbar { 
-      height: 48px; 
-      background: #FAF6F0; /* Offwhite header */
-      display: flex; 
-      align-items: center; 
-      padding: 0 16px; 
-      border-bottom: 1px solid rgba(10, 41, 71, 0.1);
-    }
-    .ide-tab { 
-      padding: 8px 16px; 
-      background: #FFFFFF; 
-      color: #0A2947; /* Navy Text */
-      font-family: 'JetBrains Mono', monospace; 
-      font-size: 13px; 
-      font-weight: 600;
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
-      border-top: 2px solid #FF6A1C; /* Orange Accent */
-      margin-top: 8px;
-      border-left: 1px solid rgba(10, 41, 71, 0.1);
-      border-right: 1px solid rgba(10, 41, 71, 0.1);
-    }
-    .ide-editor { 
-      padding: 24px; 
-      font-family: 'JetBrains Mono', monospace; 
-      font-size: 14px; 
-      line-height: 1.7; 
-      color: #0A2947; /* Navy Text */
-      overflow-x: auto; 
-      width: 100%;
-      background: #FFFFFF;
-    }
-    .ide-editor::-webkit-scrollbar { height: 8px; }
-    .ide-editor::-webkit-scrollbar-track { background: #FAF6F0; }
-    .ide-editor::-webkit-scrollbar-thumb { background: #AACCD6; border-radius: 4px; }
-    
-    /* Syntax Highlighting - Light Theme */
-    .syn-keyword { color: #FF6A1C; font-weight: 700; } /* Orange */
-    .syn-string { color: #0A2947; opacity: 0.8; font-weight: 500; } /* Soft Navy */
-    .syn-comment { color: rgba(10, 41, 71, 0.45); font-style: italic; } /* Faded Navy */
-    .syn-punctuation { color: rgba(10, 41, 71, 0.6); } /* Semi-transparent Navy */
-    .syn-property { color: #0A2947; font-weight: 700; } /* Bold Navy */
-
-    /* Sidebar Scroll */
-    .sidebar-scroll { max-height: calc(100vh - 180px); overflow-y: auto; padding-right: 8px; }
-    .sidebar-scroll::-webkit-scrollbar { width: 4px; }
-    .sidebar-scroll::-webkit-scrollbar-thumb { background: #AACCD6; border-radius: 4px; }
+    .ide-tabs { display:flex; gap:8px; align-items:center; }
+    .ide-tab { padding:6px 10px; border-radius:6px; background:rgba(255,255,255,0.02); color:#e6eef8; font-family: 'JetBrains Mono', monospace; font-size:13px; }
+    .ide-editor { background: #0b1220; color: #d8eefe; padding: 18px; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height:1.6; overflow:auto; max-height:420px; }
   </style>
 </head>
-<body class="flex flex-col">
 
-  <header class="h-16 flex-shrink-0 bg-white border-b border-ice/40 z-40 flex items-center justify-between px-4 lg:px-8">
-    <div class="flex items-center gap-4">
-      <button id="mobile-menu-btn" class="lg:hidden p-2 text-navy hover:bg-offwhite rounded-lg transition-colors">
-        <i class="ph-bold ph-list text-xl"></i>
-      </button>
+<body class="bg-offwhite text-navy antialiased">
 
-      <a href="index.html" class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-orange flex items-center justify-center text-white font-bold"><i class="ph-bold ph-lightning text-white"></i></div>
-        <span class="text-lg font-bold text-navy hidden sm:block">tithi<span class="text-orange">.ai</span></span>
+<nav class="sticky top-0 z-50 bg-offwhite/95 backdrop-blur border-b border-ice/40 shadow-sm">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
+        <div class="w-8 h-8 rounded-lg bg-orange flex items-center justify-center">
+          <i class="ph-bold ph-lightning text-white text-base"></i>
+        </div>
+        <span class="text-xl font-bold tracking-tight text-navy">tithi<span class="text-orange">.ai</span></span>
       </a>
-      
-      <div class="hidden sm:block h-5 w-px bg-ice/60 mx-2"></div>
-      <span class="hidden sm:block text-sm font-medium text-navy/60">Enterprise AI Masterclass</span>
-    </div>
-
-    <div class="flex items-center gap-4">
-      <div class="flex items-center gap-3 text-sm text-navy bg-offwhite px-3 py-1.5 rounded-lg border border-ice/40">
-        <div class="text-right hidden sm:block">
-          <div class="font-semibold leading-tight">Student Portal</div>
-          <div class="text-xs text-navy/60">IT Professional Track</div>
-        </div>
-        <div class="w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-xs">IT</div>
+      <div class="hidden md:flex items-center gap-7">
+        <a href="index.html" class="nav-link text-sm font-medium text-navy/70 hover:text-navy">Home</a>
+        <a href="#curriculum" class="nav-link text-sm font-medium text-navy/70 hover:text-navy">Curriculum</a>
+        <a href="#preview" class="nav-link text-sm font-medium text-navy/70 hover:text-navy">Preview</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="lessons.html" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-orange hover:bg-[#e55f17] text-white text-sm font-semibold transition-colors shadow-sm">
+          Go to App
+          <i class="ph-bold ph-arrow-right text-sm"></i>
+        </a>
       </div>
     </div>
-  </header>
-
-  <div class="flex flex-1 overflow-hidden relative">
-
-    <aside id="sidebar" class="absolute lg:static inset-y-0 left-0 w-80 bg-white border-r border-ice/40 p-6 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-30 shadow-2xl lg:shadow-none flex flex-col">
-      <div class="mb-8">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-xs font-bold uppercase tracking-wider text-navy/50">Course Progress</span>
-          <span class="text-xs font-bold text-orange" id="progress-text">10%</span>
-        </div>
-        <div class="w-full bg-ice/30 rounded-full h-2 overflow-hidden">
-          <div class="h-full bg-orange transition-all duration-1000" id="progress-bar" style="width:10%"></div>
-        </div>
-      </div>
-
-      <div class="sidebar-scroll flex-1">
-        <div class="mb-8">
-          <h3 class="text-sm font-bold text-navy mb-3">Module 01: Prompt Engineering</h3>
-          <div class="space-y-1">
-            <button data-lesson="m1-l1" class="lesson-btn w-full flex items-center gap-3 p-2.5 rounded-lg bg-orange/10 border border-orange/20 text-sm font-semibold text-orange transition-colors">
-              <i class="ph-fill ph-play-circle text-orange text-lg"></i>
-              <span>Advanced Prompt Design</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="mb-8">
-          <h3 class="text-sm font-bold text-navy mb-3">Module 02: Agentic AI</h3>
-          <div class="space-y-1">
-            <button data-lesson="m2-l1" class="lesson-btn w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-offwhite text-sm text-navy/70 transition-colors">
-              <i class="ph-bold ph-lock-key text-navy/30 text-lg icon-status"></i>
-              <span>The ReAct Framework</span>
-            </button>
-          </div>
-        </div>
-        
-        <div class="mb-8">
-          <h3 class="text-sm font-bold text-navy mb-3">Module 03: Orchestration</h3>
-          <div class="space-y-1">
-            <button data-lesson="m3-l1" class="lesson-btn w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-offwhite text-sm text-navy/70 transition-colors">
-              <i class="ph-bold ph-lock-key text-navy/30 text-lg icon-status"></i>
-              <span>Building Pipelines</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </aside>
-
-    <div id="sidebar-overlay" class="fixed inset-0 bg-navy/20 backdrop-blur-sm z-20 hidden lg:hidden"></div>
-
-    <main class="flex-1 bg-offwhite p-4 lg:p-10 overflow-y-auto overflow-x-hidden w-full">
-      <div class="max-w-5xl mx-auto flex flex-col w-full">
-
-        <div class="mb-8 flex-shrink-0 w-full">
-          <div class="flex items-center gap-2 text-xs font-bold text-navy/40 uppercase tracking-widest mb-3">
-            <span id="header-module">Module 01</span>
-            <i class="ph-bold ph-caret-right"></i>
-            <span class="text-orange" id="header-lesson">Lesson 01</span>
-          </div>
-          <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <h1 class="text-3xl md:text-4xl font-extrabold text-navy tracking-tight" id="header-title">Advanced Prompt Design</h1>
-              <p class="text-base text-navy/70 mt-2 max-w-2xl" id="header-desc">Mastering System Prompts, Few-Shot rendering, and Chain-of-Thought.</p>
-            </div>
-            <button class="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg border-2 border-ice text-navy font-semibold hover:border-navy transition-colors bg-white shadow-sm flex-shrink-0">
-              <i class="ph-bold ph-code text-lg"></i>
-              API Docs
-            </button>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-2xl p-6 md:p-10 shadow-lg border border-ice/30 w-full overflow-hidden">
-          <div class="swiper mySwiper w-full">
-            <div class="swiper-wrapper" id="slide-container">
-              </div>
-          </div>
-
-          <div class="mt-8 pt-6 border-t border-ice/30 flex flex-col sm:flex-row items-center justify-between gap-6 w-full">
-            <div class="flex items-center gap-6 w-full sm:w-auto justify-center sm:justify-start">
-              <div class="swiper-button-prev relative w-11 h-11 right-auto left-auto top-auto mt-0 bg-white border-2 border-ice hover:border-orange hover:bg-orange hover:text-white text-navy rounded-lg cursor-pointer">
-                <i class="ph-bold ph-caret-left text-lg"></i>
-              </div>
-              <div class="swiper-pagination relative w-auto bottom-auto"></div>
-              <div class="swiper-button-next relative w-11 h-11 right-auto left-auto top-auto mt-0 bg-white border-2 border-ice hover:border-orange hover:bg-orange hover:text-white text-navy rounded-lg cursor-pointer">
-                <i class="ph-bold ph-caret-right text-lg"></i>
-              </div>
-            </div>
-            <button id="mark-complete-btn" class="w-full sm:w-auto px-8 py-3.5 bg-orange hover:bg-[#e55f17] text-white font-bold rounded-lg shadow-md shadow-orange/20 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
-              Mark Complete & Continue
-              <i class="ph-bold ph-check-circle text-lg"></i>
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </main>
   </div>
+</nav>
 
-  <script>
-    const courseData = {
-      "m1-l1": {
-        module: "Module 01", lesson: "Lesson 01",
-        title: "Advanced Prompt Design",
-        desc: "Mastering System Prompts, Few-Shot rendering, and Chain-of-Thought for production environments.",
-        slides: [
-          `
-          <div class="swiper-slide cursor-grab active:cursor-grabbing w-full">
-            <div class="bg-white flex flex-col w-full">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange/10 text-orange text-xs font-bold uppercase tracking-wider mb-6 self-start">
-                <i class="ph-bold ph-lightbulb"></i> Core Concept
-              </div>
-              <h2 class="text-3xl font-extrabold text-navy mb-4">Chain of Thought (CoT)</h2>
-              <p class="text-lg text-navy/70 leading-relaxed max-w-3xl mb-8">
-                For complex logic tasks, forcing the LLM to output its step-by-step reasoning <strong>before</strong> outputting the final answer dramatically reduces hallucinations and improves accuracy.
-              </p>
-              
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-                <div class="p-6 rounded-xl border border-red-200 bg-red-50/50">
-                  <div class="flex items-center gap-2 text-red-600 font-bold mb-3"><i class="ph-bold ph-x-circle"></i> Standard Prompt (Higher Error)</div>
-                  <p class="text-sm text-navy/70 italic">"What is the total cost of 3 apples at $2 each and 4 bananas at $1 each?"</p>
+<section class="relative overflow-hidden bg-offwhite pt-20 pb-24 lg:pt-28 lg:pb-32">
+  <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div class="absolute -top-32 -right-40 w-[700px] h-[700px] rounded-full bg-ice opacity-20 blur-3xl"></div>
+    <div class="absolute bottom-0 -left-24 w-[400px] h-[400px] rounded-full bg-ice opacity-30 blur-2xl"></div>
+  </div>
+  <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-14 items-center">
+      <div class="reveal">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange/10 border border-orange/30 text-orange text-xs font-semibold mb-6 pulse-badge">
+          <i class="ph-bold ph-graduation-cap text-orange"></i>
+          Complete Masterclass Series — Registration Open
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-[3.4rem] font-extrabold leading-[1.12] tracking-tight text-navy mb-6">
+          Master Enterprise AI.<br /> From Prompt to<br /> <span class="gradient-text">Production.</span>
+        </h1>
+        <p class="text-lg text-navy/70 leading-relaxed max-w-lg mb-8">
+          The definitive masterclass for IT professionals. Learn to architect scalable generative AI systems, engineer deterministic prompts, and deploy advanced real-world automations.
+        </p>
+        <div class="flex flex-wrap items-center gap-3 mb-12">
+          <a href="lessons.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-orange hover:bg-[#e55f17] text-white font-semibold text-sm transition-colors shadow-md">
+            Start Learning
+            <i class="ph-bold ph-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+      <div class="relative reveal" style="transition-delay: 0.12s;">
+        <div class="rounded-2xl overflow-hidden shadow-2xl border border-ice/50">
+          <img src="https://placehold.co/640x440/AACCD6/0A2947?text=Course+Video+Player&font=inter" alt="Course Interface" class="w-full object-cover" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="curriculum" class="bg-white py-24">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-16 reveal">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-orange mb-3">Course Modules</span>
+      <h2 class="text-3xl lg:text-4xl font-extrabold text-navy mb-4">Everything you need to become an AI Systems Architect.</h2>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="feature-card bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-8 border border-indigo-100 reveal">
+        <h3 class="text-xl font-bold text-navy mb-3">AI Foundations</h3>
+        <p class="text-navy/70 leading-relaxed mb-4">Shared AI vocabulary, identify quick wins, and responsible AI awareness.</p>
+      </div>
+      <div class="feature-card bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-8 border border-purple-100 reveal" style="transition-delay: 0.08s;">
+        <h3 class="text-xl font-bold text-navy mb-3">Prompt Engineering</h3>
+        <p class="text-navy/70 leading-relaxed mb-4">Write effective prompts, save 1-2 hours daily, and build role-specific AI habits.</p>
+      </div>
+      <div class="feature-card bg-gradient-to-br from-cyan-50 to-blue-50 rounded-2xl p-8 border border-cyan-100 reveal" style="transition-delay: 0.16s;">
+        <h3 class="text-xl font-bold text-navy mb-3">AI for Automations</h3>
+        <p class="text-navy/70 leading-relaxed mb-4">Integrate LLM APIs, and deploy advanced real-world automations.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="preview" class="bg-ice/20 py-24 border-y border-ice/40">
+  <div class="max-w-4xl mx-auto px-6 lg:px-8">
+    <div class="text-center mb-12 reveal">
+      <h2 class="text-3xl font-extrabold text-navy mb-4">Try a Lesson Preview</h2>
+      <p class="text-base text-navy/70">Swipe through an actual module from the course.</p>
+    </div>
+
+    <div class="ide-window bg-white overflow-visible rounded-xl p-6 reveal" style="transition-delay: 0.1s;">
+      <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide p-6">
+            <div class="bg-offwhite rounded-lg p-6 border border-ice/50">
+              <h2 class="text-xl font-semibold text-navy mb-3">Concept</h2>
+              <p class="text-sm text-navy/70 mb-4">Artificial Intelligence refers to systems that perform tasks which normally require human intelligence.</p>
+              <blockquote class="border-l-4 border-orange pl-4 italic text-navy/80 bg-white/60 p-4 rounded-md">
+                "AI is not magic — it's applied statistics, engineering, and careful product design."
+              </blockquote>
+            </div>
+          </div>
+          <div class="swiper-slide p-6">
+            <div class="bg-white rounded-lg p-6 border border-ice/50">
+              <h2 class="text-xl font-semibold text-navy mb-4">Key API Parameters</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="p-4 rounded-lg border border-ice/40 bg-offwhite">
+                  <div class="text-sm font-semibold text-navy mb-2">Temperature</div>
+                  <p class="text-sm text-navy/70">Controls randomness. Lower values make outputs more deterministic.</p>
                 </div>
-                <div class="p-6 rounded-xl border border-green-200 bg-green-50/50">
-                  <div class="flex items-center gap-2 text-green-600 font-bold mb-3"><i class="ph-bold ph-check-circle"></i> CoT Prompt (High Accuracy)</div>
-                  <p class="text-sm text-navy/70 italic">"What is the total cost of 3 apples at $2 each and 4 bananas at $1 each? <strong>Let's think step by step.</strong>"</p>
+                <div class="p-4 rounded-lg border border-ice/40 bg-offwhite">
+                  <div class="text-sm font-semibold text-navy mb-2">Top_P (nucleus sampling)</div>
+                  <p class="text-sm text-navy/70">Limits tokens to a probability mass. Use for controlled randomness.</p>
                 </div>
               </div>
             </div>
-          </div>`,
-          `
-          <div class="swiper-slide cursor-grab active:cursor-grabbing w-full">
-            <div class="bg-white flex flex-col w-full">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ice/20 text-navy text-xs font-bold uppercase tracking-wider mb-6 self-start">
-                <i class="ph-bold ph-sliders"></i> Configuration
+          </div>
+          <div class="swiper-slide p-6">
+            <div class="rounded-lg overflow-hidden border border-ice/40 ide-window">
+              <div class="ide-topbar">
+                <div class="ide-tabs"><div class="ide-tab">api.js</div></div>
               </div>
-              <h2 class="text-3xl font-extrabold text-navy mb-8">API Parameters in Production</h2>
-              
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
-                <div class="p-8 rounded-2xl border border-ice/40 bg-offwhite hover:border-orange/50 transition-colors group">
-                  <div class="flex items-center justify-between mb-4">
-                    <div class="font-extrabold text-navy text-lg flex items-center gap-2"><i class="ph-fill ph-thermometer text-orange text-2xl group-hover:scale-110 transition-transform"></i> Temperature</div>
-                    <div class="px-2 py-1 bg-white border border-ice/50 rounded text-xs font-mono font-bold text-navy/60">0.0 - 1.0</div>
-                  </div>
-                  <p class="text-sm text-navy/70 mb-6 leading-relaxed">Controls randomness. Lower values make outputs focused and deterministic; higher values increase creativity.</p>
-                  <div class="w-full bg-ice/30 h-2 rounded-full mb-3 overflow-hidden"><div class="h-full bg-orange rounded-full" style="width:20%"></div></div>
-                  <div class="flex justify-between text-xs text-navy/50 font-bold uppercase tracking-wide"><span>Deterministic (0.2)</span><span>Creative (0.8)</span></div>
-                </div>
-                
-                <div class="p-8 rounded-2xl border border-ice/40 bg-offwhite hover:border-navy/50 transition-colors group">
-                  <div class="flex items-center justify-between mb-4">
-                    <div class="font-extrabold text-navy text-lg flex items-center gap-2"><i class="ph-fill ph-chart-scatter text-navy text-2xl group-hover:scale-110 transition-transform"></i> Top_P</div>
-                    <div class="px-2 py-1 bg-white border border-ice/50 rounded text-xs font-mono font-bold text-navy/60">0.0 - 1.0</div>
-                  </div>
-                  <p class="text-sm text-navy/70 mb-6 leading-relaxed">Nucleus sampling. Limits tokens to a probability mass. Alter this or Temperature, but rarely both in production.</p>
-                  <div class="w-full bg-ice/30 h-2 rounded-full mb-3 overflow-hidden"><div class="h-full bg-navy rounded-full" style="width:80%"></div></div>
-                  <div class="flex justify-between text-xs text-navy/50 font-bold uppercase tracking-wide"><span>Narrow (0.1)</span><span>Broad (0.9)</span></div>
-                </div>
+              <div class="ide-editor">
+<pre style="margin:0;">
+async function summarize(text) {
+  const resp = await fetch('/api/llm', {
+    method: 'POST',
+    body: JSON.stringify({
+      prompt: `Summarize:\n\n${text}`,
+      temperature: 0.2
+    })
+  });
+  return (await resp.json()).output;
+}
+</pre>
               </div>
             </div>
-          </div>`,
-          `
-          <div class="swiper-slide cursor-grab active:cursor-grabbing w-full">
-             <div class="bg-white flex flex-col w-full">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy/10 text-navy text-xs font-bold uppercase tracking-wider mb-6 self-start">
-                <i class="ph-bold ph-code"></i> Implementation
-              </div>
-              <h2 class="text-3xl font-extrabold text-navy mb-6">Structuring the Payload</h2>
-              <div class="ide-window flex flex-col min-w-0">
-                <div class="ide-topbar flex-shrink-0">
-                  <div class="flex gap-2">
-                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
-                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
-                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
-                  </div>
-                  <div class="ml-4 flex items-center h-full">
-                    <div class="ide-tab">system_prompt.js</div>
-                  </div>
-                  <div class="ml-auto flex items-center gap-2 text-xs text-navy/50 hover:text-orange cursor-pointer transition-colors">
-                    <i class="ph-bold ph-copy"></i> Copy Code
-                  </div>
-                </div>
-                <div class="ide-editor w-full">
-<pre style="margin:0;"><span class="syn-keyword">const</span> payload <span class="syn-punctuation">=</span> {
-  <span class="syn-property">model</span><span class="syn-punctuation">:</span> <span class="syn-string">"gpt-4-turbo"</span><span class="syn-punctuation">,</span>
-  <span class="syn-property">temperature</span><span class="syn-punctuation">:</span> <span class="syn-keyword">0.1</span><span class="syn-punctuation">,</span> <span class="syn-comment">// Highly deterministic for IT architecture</span>
-  <span class="syn-property">messages</span><span class="syn-punctuation">:</span> <span class="syn-punctuation">[</span>
-    { 
-      <span class="syn-property">role</span><span class="syn-punctuation">:</span> <span class="syn-string">"system"</span><span class="syn-punctuation">,</span> 
-      <span class="syn-property">content</span><span class="syn-punctuation">:</span> <span class="syn-string">"You are an expert IT architect. Output strictly valid JSON. \nReason step-by-step before answering."</span> 
-    }<span class="syn-punctuation">,</span>
-    { 
-      <span class="syn-property">role</span><span class="syn-punctuation">:</span> <span class="syn-string">"user"</span><span class="syn-punctuation">,</span> 
-      <span class="syn-property">content</span><span class="syn-punctuation">:</span> <span class="syn-string">"Design a scalable AWS architecture for a chat app."</span> 
-    }
-  <span class="syn-punctuation">]</span>
-}<span class="syn-punctuation">;</span></pre>
-                </div>
-              </div>
-            </div>
-          </div>`
-        ]
-      },
-      "m2-l1": {
-        module: "Module 02", lesson: "Lesson 01",
-        title: "The ReAct Framework",
-        desc: "Building Agentic AI that can Reason and Act using external APIs and tools.",
-        slides: [
-          `
-          <div class="swiper-slide cursor-grab active:cursor-grabbing w-full">
-            <div class="bg-white flex flex-col items-center text-center px-10 w-full">
-              <div class="w-20 h-20 bg-navy/5 rounded-2xl flex items-center justify-center mb-8 border border-ice/30">
-                <i class="ph-bold ph-robot text-navy text-4xl"></i>
-              </div>
-              <h2 class="text-3xl font-extrabold text-navy mb-6">What is an AI Agent?</h2>
-              <p class="text-lg text-navy/70 leading-relaxed max-w-2xl mb-10">
-                While standard LLMs only generate text based on training data, Agents have access to external <strong>Tools</strong> (like calculators, web browsers, or SQL databases) to interact with the real world.
-              </p>
-              <div class="flex flex-col sm:flex-row gap-6 w-full max-w-3xl">
-                <div class="flex-1 p-6 bg-offwhite rounded-xl border border-ice/40 text-left">
-                  <div class="font-bold text-orange mb-2 uppercase tracking-wide text-sm">Step 1</div>
-                  <div class="font-extrabold text-navy text-lg mb-1">Reasoning</div>
-                  <div class="text-sm text-navy/60">LLM decides what tool is needed.</div>
-                </div>
-                <div class="flex-1 p-6 bg-offwhite rounded-xl border border-ice/40 text-left">
-                  <div class="font-bold text-orange mb-2 uppercase tracking-wide text-sm">Step 2</div>
-                  <div class="font-extrabold text-navy text-lg mb-1">Acting</div>
-                  <div class="text-sm text-navy/60">LLM executes the API call.</div>
-                </div>
-                <div class="flex-1 p-6 bg-offwhite rounded-xl border border-ice/40 text-left">
-                  <div class="font-bold text-orange mb-2 uppercase tracking-wide text-sm">Step 3</div>
-                  <div class="font-extrabold text-navy text-lg mb-1">Observing</div>
-                  <div class="text-sm text-navy/60">LLM reads output and responds.</div>
-                </div>
-              </div>
-            </div>
-          </div>`
-        ]
-      },
-      "m3-l1": {
-        module: "Module 03", lesson: "Lesson 01",
-        title: "Building Pipelines",
-        desc: "Orchestrating complex RAG pipelines using LangChain and Semantic Routing.",
-        slides: [
-          `
-          <div class="swiper-slide cursor-grab active:cursor-grabbing w-full">
-            <div class="bg-white flex flex-col w-full">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ice/20 text-navy text-xs font-bold uppercase tracking-wider mb-6 self-start">
-                <i class="ph-bold ph-git-merge"></i> Architecture
-              </div>
-              <h2 class="text-3xl font-extrabold text-navy mb-4">Semantic Routing</h2>
-              <p class="text-lg text-navy/70 leading-relaxed max-w-3xl mb-8">
-                In production, you don't send every user query to the same heavy LLM. You use a fast embedding model to classify the user's intent, and route the prompt to the most efficient subsystem.
-              </p>
-              <div class="p-8 bg-offwhite rounded-xl border border-ice/40 border-l-4 border-l-orange w-full">
-                <h4 class="font-bold text-navy mb-2">Pro Tip for IT Architects:</h4>
-                <p class="text-sm text-navy/70">Route simple queries (e.g., "reset password") to a cheap model (like GPT-3.5) and reserve expensive models (GPT-4) only for complex coding or reasoning tasks to optimize cloud costs.</p>
-              </div>
-            </div>
-          </div>`
-        ]
-      }
-    };
+          </div>
+        </div>
+        <div class="flex items-center justify-between mt-6">
+          <div class="swiper-pagination"></div>
+          <div class="flex items-center gap-3">
+            <div class="swiper-button-prev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="swiper-button-next"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    document.addEventListener('DOMContentLoaded', function () {
-      let swiperInstance;
-      const slideContainer = document.getElementById('slide-container');
-      const lessonButtons = document.querySelectorAll('.lesson-btn');
+<footer class="bg-navy text-offwhite py-16">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
+    <p class="text-sm text-offwhite/60">© 2026 Tithi.ai. All rights reserved.</p>
+  </div>
+</footer>
 
-      function initSwiper() {
-        if(swiperInstance) swiperInstance.destroy(true, true);
-        swiperInstance = new Swiper('.mySwiper', {
-          spaceBetween: 40,
-          grabCursor: true,
-          autoHeight: true, 
-          navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-          pagination: { el: '.swiper-pagination', clickable: true },
-          keyboard: { enabled: true }
-        });
-      }
-
-      function loadLesson(lessonId) {
-        const data = courseData[lessonId];
-        if(!data) return;
-
-        document.getElementById('header-module').textContent = data.module;
-        document.getElementById('header-lesson').textContent = data.lesson;
-        document.getElementById('header-title').textContent = data.title;
-        document.getElementById('header-desc').textContent = data.desc;
-
-        slideContainer.innerHTML = data.slides.join('');
-        
-        setTimeout(() => { initSwiper(); }, 50);
-
-        lessonButtons.forEach(btn => {
-          const icon = btn.querySelector('i');
-          if(btn.dataset.lesson === lessonId) {
-            btn.className = "lesson-btn w-full flex items-center gap-3 p-3 rounded-xl bg-orange/10 border border-orange/20 text-sm font-semibold text-orange transition-colors";
-            icon.className = "ph-fill ph-play-circle text-orange text-xl icon-status";
-          } else {
-            btn.className = "lesson-btn w-full flex items-center gap-3 p-3 rounded-xl hover:bg-offwhite text-sm text-navy/70 transition-colors";
-            icon.className = "ph-bold ph-check-circle text-green-500 text-xl icon-status";
-          }
-        });
-      }
-
-      lessonButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          loadLesson(e.currentTarget.dataset.lesson);
-        });
+<script>
+  // Scroll Reveal
+  (function () {
+    const els = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
       });
+    }, { threshold: 0.12 });
+    els.forEach((el) => observer.observe(el));
+  })();
 
-      loadLesson('m1-l1');
-
-      const mobileBtn = document.getElementById('mobile-menu-btn');
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('sidebar-overlay');
-
-      function toggleSidebar() {
-        sidebar.classList.toggle('-translate-x-full');
-        overlay.classList.toggle('hidden');
-      }
-
-      mobileBtn.addEventListener('click', toggleSidebar);
-      overlay.addEventListener('click', toggleSidebar);
+  // Swiper Init
+  document.addEventListener('DOMContentLoaded', function () {
+    new Swiper('.mySwiper', {
+      effect: 'fade', fadeEffect: { crossFade: true },
+      spaceBetween: 24, loop: false,
+      navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+      pagination: { el: '.swiper-pagination', clickable: true }
     });
-  </script>
-
+  });
+</script>
 </body>
 </html>
