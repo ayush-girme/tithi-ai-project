@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth h-full">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -193,12 +193,14 @@
     .lesson-link[aria-current="true"] { background: #FF6A1C; color: #fff; font-weight:600; }
 
     /* Page section styles */
-    #homeSection, #loginSection { display: none; }
-    #homeSection.active, #loginSection.active { display: block; }
+    #homeSection, #lessonsSection, #loginSection { display: none; width: 100%; }
+    #homeSection.active { display: block; width: 100%; overflow-y: auto; }
+    #lessonsSection.active { display: flex; width: 100%; }
+    #loginSection.active { display: block; width: 100%; }
   </style>
 </head>
 
-<body class="bg-offwhite text-navy antialiased h-full">
+<body class="bg-offwhite text-navy antialiased">
 
 <!-- ===================== UNIFIED NAVIGATION ===================== -->
 <nav class="sticky top-0 z-50 bg-offwhite/95 backdrop-blur border-b border-ice/40 shadow-sm">
